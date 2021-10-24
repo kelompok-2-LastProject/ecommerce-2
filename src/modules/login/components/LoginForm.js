@@ -1,5 +1,5 @@
 const LoginForm = () => {
-  return <div>Login FOrm</div>;
+  return <div>Login Formmmmm</div>;
 };
 
 export default LoginForm;
