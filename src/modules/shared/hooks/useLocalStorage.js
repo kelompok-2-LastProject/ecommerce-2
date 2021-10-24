@@ -3,26 +3,23 @@ import { useState } from 'react';
 function useLocalStorage(key, initialValue) {
   // State to store our value
   // Pass initial state function to useState so logic is only executed once
-  const [storedValue, setStoredValue] =
-    useState <
-    T >
-    (() => {
-      try {
-        let item;
+  const [storedValue, setStoredValue] = useState(() => {
+    try {
+      let item;
 
-        // Get from local storage by key
-        if (typeof window !== 'undefined') {
-          item = window.localStorage.getItem(key);
-        }
-
-        // Parse stored json or if none return initialValue
-        return item ? JSON.parse(item) : initialValue;
-      } catch (err) {
-        // If error also return initialValue
-        console.error(err);
-        return initialValue;
+      // Get from local storage by key
+      if (typeof window !== 'undefined') {
+        item = window.localStorage.getItem(key);
       }
-    });
+
+      // Parse stored json or if none return initialValue
+      return item ? JSON.parse(item) : initialValue;
+    } catch (err) {
+      // If error also return initialValue
+      console.error(err);
+      return initialValue;
+    }
+  });
 
   // Return a wrapped version of useState's setter function that ...
   // ... persists the new value to localStorage.
