@@ -37,7 +37,7 @@ export default function HomePage() {
 
           <h6 className="my-5">Berikut produk kami</h6>
 
-          <Row xs={1} sm={2} md={3} lg={4} className="g-4">
+          <Row xs={1} sm={2} lg={3} xxl={4} className="g-4">
             {products?.map((product) => (
               <Col key={product.id}>
                 <Card>
@@ -57,7 +57,7 @@ export default function HomePage() {
                     </Card.Text>
                   </Card.Body>
 
-                  <Card.Footer className="px-5 d-flex justify-content-between">
+                  <Card.Footer className="px-5 py-4 d-flex justify-content-between">
                     <Button variant="secondary">Detail</Button>
                     <Button variant="primary">Add to cart</Button>
                   </Card.Footer>
