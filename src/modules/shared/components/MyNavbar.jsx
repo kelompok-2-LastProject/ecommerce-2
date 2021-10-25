@@ -47,7 +47,7 @@ const MyNavbar = () => {
 
   return (
     <Navbar expand="md" style={{ backgroundColor: theme.colors.primary }}>
-      <Container fluid>
+      <Container fluid="lg">
         <Link href="/cart" passHref>
           <Image
             className="rounded-circle"
