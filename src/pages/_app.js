@@ -3,6 +3,7 @@ import { Provider } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import NProgress from 'nprogress';
 import Router from 'next/router';
+import { DefaultSeo } from 'next-seo';
 
 // import styles
 import '../modules/shared/styles/globals.css';
@@ -12,6 +13,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 // import files
 import store from '../modules/shared/redux/store';
+import SEO from '../modules/shared/config/seo';
 
 // create a custom progress bar
 NProgress.configure({ showSpinner: false });
@@ -27,10 +29,14 @@ Router.events.on('routeChangeError', () => {
 
 function MyApp({ Component, pageProps }) {
   return (
-    <Provider store={store}>
-      <Component {...pageProps} />
-      <ToastContainer />
-    </Provider>
+    <>
+      <DefaultSeo {...SEO} />
+
+      <Provider store={store}>
+        <Component {...pageProps} />
+        <ToastContainer />
+      </Provider>
+    </>
   );
 }
 
