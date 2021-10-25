@@ -6,6 +6,17 @@ import { Navbar, Container, Nav, Button, Image } from 'react-bootstrap';
 import useLocalStorage from '../hooks/useLocalStorage';
 import { theme } from '../config/constants';
 
+const styles = {
+  navLinkFirst: {
+    color: theme.colors.white,
+    marginRight: '1rem',
+  },
+  navLink: {
+    color: theme.colors.white,
+    marginRight: '1rem',
+  },
+};
+
 const MyNavbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useLocalStorage('isLoggedIn', false);
   const { push } = useRouter();
@@ -35,30 +46,37 @@ const MyNavbar = () => {
   );
 
   return (
-    <Navbar expand="lg" style={{ backgroundColor: theme.colors.primary }}>
+    <Navbar expand="md" style={{ backgroundColor: theme.colors.primary }}>
       <Container fluid>
         <Link href="/cart" passHref>
-          <Image alt="logo" src="/logo-dark.png" width="40" height="20" />
+          <Image
+            className="rounded-circle"
+            alt="logo"
+            src="/logo-dark.png"
+            width="40"
+            height="40"
+          />
         </Link>
 
-        <Navbar.Toggle aria-controls="navbarScroll" />
+        <Navbar.Toggle
+          aria-controls="navbarScroll"
+          style={{ backgroundColor: theme.colors.white }}
+        />
 
         <Navbar.Collapse id="navbarScroll">
           <Nav
-            className="me-auto my-2 my-lg-0"
+            className="me-auto my-2 mx-3 my-lg-0"
             style={{ maxHeight: '100px' }}
             navbarScroll
           >
             <Link href="/" passHref>
-              <Nav.Link className="ml-4" style={{ color: theme.colors.white }}>
-                Home
-              </Nav.Link>
+              <Nav.Link style={styles.navLink}>Home</Nav.Link>
             </Link>
             <Link href="/faq" passHref>
-              <Nav.Link style={{ color: theme.colors.white }}>FAQ</Nav.Link>
+              <Nav.Link style={styles.navLink}>FAQ</Nav.Link>
             </Link>
             <Link href="/support" passHref>
-              <Nav.Link style={{ color: theme.colors.white }}>Support</Nav.Link>
+              <Nav.Link style={styles.navLink}>Support</Nav.Link>
             </Link>
           </Nav>
 
