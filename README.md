@@ -1,34 +1,46 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<a href="https://trishop.vercel.app">
+  <p align="center">
+    <img height=100 src="./public/logo-dark.png"/>
+  </p>
 
-## Getting Started
+  <h1 style="color: CornflowerBlue;" align="center">
+    fe:male
+  </h1>
+</a>
 
-First, run the development server:
+<p align="center">
+  <strong style="font-style: italic;">Hacktiv8 Internship Final Project - Team 2</strong>
+</p>
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## What is fe:male ❓
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+fe:male adalah final project dari Team 2 yang beranggotakan Tri Rizeki Rifandani dan Vera. Project ini merupakan project dari program kampus merdeka internship 2021 di Hacktiv8.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+## Features 🎲
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+Trishop dilengkapi dengan fitur:
 
-## Learn More
+1. Next.js + Eslint ⚡
+2. Next.js dengan seo ✅
+3. External API call ke [FakeStoreAPI](www.fakestoreapi.com) 🌸
+4. Peyimpanan data dengan Local Storage 🍃
+5. UI Library menggunakan react-bootstrap 🎉
+6. State management menggunakan redux-toolkit 🔯
 
-To learn more about Next.js, take a look at the following resources:
+## Screenshots 📷
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Coming soon
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+<!-- - Halaman admin dashboard add product
 
-## Deploy on Vercel
+  <img src="public/readme/admin2.jpg" alt="admin dashboard add product page" style="height: 300px;" /> -->
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Usage 🏀
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Untuk menjalankan project ini di local, ikuti langkah berikut:
+
+1. Clone repo ini
+2. Jalankan `yarn install` atau `npm install`
+3. Jalankan `yarn dev` atau `npm run dev` untuk menjalankan Next.js frontend di port `3000`
