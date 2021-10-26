@@ -4,6 +4,7 @@ import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 // files
 import MyNavbar from '../../shared/components/MyNavbar';
+import MyFooter from '../../shared/components/MyFooter';
 import truncateText from '../../shared/utils/truncateText';
 import { getProducts } from '../services/products';
 
@@ -35,9 +36,9 @@ export default function HomePage() {
         <Container fluid="lg">
           <h1 className="my-5">Products List</h1>
 
-          <h6 className="my-5">Berikut produk kami</h6>
+          <h6 className="">Berikut produk kami</h6>
 
-          <Row xs={1} sm={2} lg={3} xxl={4} className="g-4">
+          <Row xs={1} sm={2} lg={3} xxl={4} className="my-5 g-4">
             {products?.map((product) => (
               <Col key={product.id}>
                 <Card>
@@ -66,6 +67,8 @@ export default function HomePage() {
             ))}
           </Row>
         </Container>
+
+        <MyFooter />
       </main>
     </div>
   );
