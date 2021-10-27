@@ -1,9 +1,11 @@
 import { Button } from 'react-bootstrap';
 import Head from 'next/head';
+import LoginForm from '../modules/login/components/LoginForm'
 
 export default function Home() {
   return (
     <div className="">
+      <LoginForm/>
       <Head>
         <title>Create Next App</title>
         <link rel="icon" href="/favicon.ico" />
