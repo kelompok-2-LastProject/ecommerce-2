@@ -2,13 +2,31 @@ import { NextSeo } from 'next-seo';
 import { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import { toast } from 'react-toastify';
+import { useRouter } from 'next/router';
 // files
 import MyNavbar from '../../shared/components/MyNavbar';
 import MyFooter from '../../shared/components/MyFooter';
+import useLocalStorage from '../../shared/hooks/useLocalStorage';
 import truncateText from '../../shared/utils/truncateText';
-import { getProducts } from '../services/products';
+import { getProducts } from '../../shared/services/products';
+import { ADMIN_TOKEN } from '../../shared/config/constants';
 
 export default function HomePage() {
+  /* #region check if admin */
+  const { push } = useRouter();
+  const [token] = useLocalStorage('token', null);
+
+  useEffect(() => {
+    (async () => {
+      if (token === ADMIN_TOKEN) {
+        await push('/admin/products'); // push to update products
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
+  /* #endregion */
+
+  /* #region MAIN */
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
@@ -24,6 +42,22 @@ export default function HomePage() {
       setProducts(data);
     })();
   }, []);
+
+  const onDetail = async (productId) => {
+    await push(`/products/${productId}`);
+  };
+
+  const onAddToCart = async () => {
+    // if not logged in
+    if (!token) {
+      toast.warn('Please login first');
+      await push('/login');
+      return;
+    }
+
+    // TODO: add to REDUX cart
+  };
+  /* #endregion */
 
   return (
     <div className="home">
@@ -59,8 +93,15 @@ export default function HomePage() {
                   </Card.Body>
 
                   <Card.Footer className="px-5 py-4 d-flex justify-content-between">
-                    <Button variant="secondary">Detail</Button>
-                    <Button variant="primary">Add to cart</Button>
+                    <Button
+                      variant="secondary"
+                      onClick={() => onDetail(product.id)}
+                    >
+                      Detail
+                    </Button>
+                    <Button variant="primary" onClick={onAddToCart}>
+                      Add to cart
+                    </Button>
                   </Card.Footer>
                 </Card>
               </Col>
