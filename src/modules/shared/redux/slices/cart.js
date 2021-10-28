@@ -6,7 +6,6 @@ const cartSlice = createSlice({
     count: 0,
     values: [],
   },
-  // Redux Toolkit allows us to write "mutating" logic in reducers. It doesn't actually mutate the state because it uses the Immer library.
   reducers: {},
 });
 
@@ -14,7 +13,7 @@ const cartSlice = createSlice({
 export const cartSelector = (state) => state.cart.values;
 
 // cart actions
-export const { addProductToCart, deleteProductFromCart } = cartSlice.actions;
+export const { addProductToCart } = cartSlice.actions;
 
 // cart reducer
 export default cartSlice.reducer;
