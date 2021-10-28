@@ -7,11 +7,13 @@ import { Form, Button, Container } from 'react-bootstrap';
 // files
 import MyNavbar from '../../shared/components/MyNavbar';
 import MyFooter from '../../shared/components/MyFooter';
+import Loader from '../../shared/components/Loader';
 import { ADMIN_TOKEN } from '../../shared/config/constants';
 
 export default function LoginPage() {
   /* #region CHECK IF LOGGED IN AS USER / ADMIN */
   const router = useRouter();
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -22,6 +24,8 @@ export default function LoginPage() {
       } else if (token === ADMIN_TOKEN) {
         await router.push('/admin/products'); // push to admin/products
       }
+
+      setIsReady(true);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -71,45 +75,52 @@ export default function LoginPage() {
   return (
     <div className="login">
       <NextSeo title="Login" />
-      {/* navbar */}
-      <MyNavbar />
 
-      <main className="my-5 login-container">
-        <Container fluid="lg">
-          <h1 className="my-5">Login to your account</h1>
+      {isReady ? (
+        <>
+          {/* navbar */}
+          <MyNavbar />
 
-          <Form className="" onSubmit={handleSubmit}>
-            <Form.Group className="mb-3">
-              <Form.Label>Username/Email</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter username/email"
-                style={{ width: '50%' }}
-                value={username}
-                onChange={(e) => setUserName(e.target.value)}
-              />
-            </Form.Group>
+          <main className="my-5 login-container">
+            <Container fluid="lg">
+              <h1 className="my-5">Login to your account</h1>
 
-            <Form.Group className="" controlId="formBasicPassword">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Password"
-                style={{ width: '50%' }}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </Form.Group>
+              <Form className="" onSubmit={handleSubmit}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Username/Email</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter username/email"
+                    style={{ width: '50%' }}
+                    value={username}
+                    onChange={(e) => setUserName(e.target.value)}
+                  />
+                </Form.Group>
 
-            <Button className="my-5" variant="primary" type="submit">
-              Submit
-            </Button>
-          </Form>
-        </Container>
-      </main>
+                <Form.Group className="" controlId="formBasicPassword">
+                  <Form.Label>Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    placeholder="Password"
+                    style={{ width: '50%' }}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </Form.Group>
 
-      {/* footer */}
-      <MyFooter />
+                <Button className="my-5" variant="primary" type="submit">
+                  Submit
+                </Button>
+              </Form>
+            </Container>
+          </main>
+
+          {/* footer */}
+          <MyFooter />
+        </>
+      ) : (
+        <Loader />
+      )}
     </div>
   );
 }
