@@ -6,24 +6,24 @@ import { useRouter } from 'next/router';
 // files
 import MyNavbar from '../../shared/components/MyNavbar';
 import MyFooter from '../../shared/components/MyFooter';
-import useLocalStorage from '../../shared/hooks/useLocalStorage';
 import truncateText from '../../shared/utils/truncateText';
 import { getProducts } from '../../shared/services/products';
 import { ADMIN_TOKEN } from '../../shared/config/constants';
 
 export default function HomePage() {
-  /* #region check if admin */
+  /* #region CHECK IF LOGGED IN AS ADMIN */
   const { push } = useRouter();
-  const [token] = useLocalStorage('token', null);
 
   useEffect(() => {
     (async () => {
+      const token = localStorage.getItem('token');
+
       if (token === ADMIN_TOKEN) {
         await push('/admin/products'); // push to update products
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, []);
   /* #endregion */
 
   /* #region MAIN */

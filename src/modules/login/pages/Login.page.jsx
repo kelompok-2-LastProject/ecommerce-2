@@ -4,51 +4,70 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Form, Button, Container } from 'react-bootstrap';
-
+// files
 import MyNavbar from '../../shared/components/MyNavbar';
 import MyFooter from '../../shared/components/MyFooter';
 import { ADMIN_TOKEN } from '../../shared/config/constants';
 
 export default function LoginPage() {
+  /* #region CHECK IF LOGGED IN AS USER / ADMIN */
   const router = useRouter();
-  const [user, setUser] = useState([]);
-  const [username, setUserName] = useState();
-  const [password, setPassword] = useState();
+
+  useEffect(() => {
+    (async () => {
+      const token = localStorage.getItem('token');
+
+      if (token.startsWith('eyJh')) {
+        await router.push('/'); // push to home page
+      } else if (token === ADMIN_TOKEN) {
+        await router.push('/admin/products'); // push to admin/products
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  /* #endregion */
+
+  /* #region MAIN */
+  const [user, setUser] = useState(null);
+  const [username, setUserName] = useState('');
+  const [password, setPassword] = useState('');
 
   useEffect(() => {
     axios.get(`https://fakestoreapi.com/users/2`).then((res) => {
-      const persons = res.data;
-      setUser(persons);
+      const person = res.data;
+      setUser(person);
     });
-  });
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    //untuk login user
-    //username = mor_2314
-    //password = 83r5^_
     if (username === user.username && password === user.password) {
+      //untuk login user
+      //username = mor_2314
+      //password = 83r5^_
       const res = await axios.post('https://fakestoreapi.com/auth/login', {
         username: user.username,
         password: user.password,
       });
+
       const token = res.data.token;
       localStorage.setItem('token', token);
-      router.push('/');
-    }
-    //untuk login admin
-    //username = admin@bukapedia.com
-    //password = admin123
-    else if (username === 'admin@bukapedia.com' && password === 'admin123') {
+      await router.push('/');
+    } else if (username === 'admin@bukapedia.com' && password === 'admin123') {
+      //untuk login admin
+      //username = admin@bukapedia.com
+      //password = admin123
       localStorage.setItem('token', ADMIN_TOKEN);
-      router.push('/admin/products');
+      await router.push('/admin/products');
     } else {
       toast.error('Wrong Username/Email or Password!');
       setUserName('');
       setPassword('');
     }
   };
+  /* #endregion */
+
   return (
     <div className="login">
       <NextSeo title="Login" />
