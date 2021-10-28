@@ -1,19 +1,41 @@
+import { useRouter } from 'next/router';
 import { NextSeo } from 'next-seo';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { FaStar } from 'react-icons/fa';
 import { Container, Row, Col, Image, Spinner, Button } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 // files
 import MyNavbar from '../../shared/components/MyNavbar';
 import MyFooter from '../../shared/components/MyFooter';
+import useLocalStorage from '../../shared/hooks/useLocalStorage';
 import { getProduct } from '../../shared/services/products';
+import { ADMIN_TOKEN } from '../../shared/config/constants';
 
 export default function ProductDetailPage() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [product, setProduct] = useState([]);
+  /* #region check if admin */
+  const { push } = useRouter();
+  const [token] = useLocalStorage('token', null);
 
-  const splittedURL = window.location.pathname.split('/');
-  const productId = splittedURL[splittedURL.length - 1];
+  useEffect(() => {
+    (async () => {
+      if (token === ADMIN_TOKEN) {
+        await push('/admin/products'); // push to update products
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
+  /* #endregion */
+
+  /* #region MAIN */
+  const productId = useMemo(() => {
+    const splittedURL = window.location.pathname.split('/');
+    const productId = splittedURL[splittedURL.length - 1];
+
+    return productId;
+  }, []);
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [product, setProduct] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -30,9 +52,21 @@ export default function ProductDetailPage() {
     })();
   }, [productId]);
 
+  const onAddToCart = async () => {
+    // if not logged in
+    if (!token) {
+      toast.warn('Please login first');
+      await push('/login');
+      return;
+    }
+
+    // TODO: add to REDUX cart
+  };
+  /* #endregion */
+
   return (
-    <div className="home">
-      <NextSeo title="Product" />
+    <div className="product-detail">
+      <NextSeo title={product?.title} />
 
       {/* navbar */}
       <MyNavbar />
@@ -88,7 +122,9 @@ export default function ProductDetailPage() {
                 </p>
 
                 {/* add to cart */}
-                <Button variant="primary">Add to cart</Button>
+                <Button variant="primary" onClick={onAddToCart}>
+                  Add to cart
+                </Button>
               </Col>
             </Row>
           )}

@@ -63,10 +63,10 @@ export default function HomePage() {
     <div className="home">
       <NextSeo title="Home" />
 
-      <main className="home-container">
-        {/* navbar */}
-        <MyNavbar />
+      {/* navbar */}
+      <MyNavbar />
 
+      <main className="pb-5 home-container">
         <Container fluid="lg">
           <h1 className="my-5">Products List</h1>
 
@@ -108,9 +108,9 @@ export default function HomePage() {
             ))}
           </Row>
         </Container>
-
-        <MyFooter />
       </main>
+
+      <MyFooter />
     </div>
   );
 }
