@@ -1,8 +1,9 @@
-import { Form, Button, Container } from 'react-bootstrap';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import { toast } from 'react-toastify';
 import axios from 'axios';
+import { NextSeo } from 'next-seo';
+import { toast } from 'react-toastify';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { Form, Button, Container } from 'react-bootstrap';
 
 import MyNavbar from '../../shared/components/MyNavbar';
 import MyFooter from '../../shared/components/MyFooter';
@@ -41,13 +42,15 @@ export default function LoginPage() {
     else if (username === 'admin@bukapedia.com' && password === 'admin123') {
       router.push('/cart');
     } else {
-      toast.error('Username/Email atau Password salah!');
+      toast.error('Wrong Username/Email or Password!');
     }
   };
   return (
     <main>
+      <NextSeo title="Login" />
+      {/* navbar */}
       <MyNavbar />
-      <Container fluid="lg my-5">
+      <Container fluid="lg my-5 pb-5 pt-3">
         <Form className="container" onSubmit={handleSubmit}>
           <Form.Group className="mb-3">
             <Form.Label>Username/Email</Form.Label>
