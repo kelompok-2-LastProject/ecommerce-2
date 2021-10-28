@@ -43,6 +43,8 @@ export default function LoginPage() {
       router.push('/cart');
     } else {
       toast.error('Wrong Username/Email or Password!');
+      setUserName('');
+      setPassword('');
     }
   };
   return (
