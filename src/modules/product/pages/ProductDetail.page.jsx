@@ -76,8 +76,8 @@ export default function ProductDetailPage() {
           <h1 className="my-5">Product Detail</h1>
 
           {isLoading && (
-            <Row className="min-vh-100 min-vw-100 justify-content-center align-items-center">
-              <Spinner animation="border" variant="primary" />
+            <Row className="mx-auto min-vh-100">
+              <Spinner className="mt-5" animation="border" variant="primary" />
             </Row>
           )}
 

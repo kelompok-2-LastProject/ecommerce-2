@@ -7,6 +7,7 @@ import { Form, Button, Container } from 'react-bootstrap';
 
 import MyNavbar from '../../shared/components/MyNavbar';
 import MyFooter from '../../shared/components/MyFooter';
+import { ADMIN_TOKEN } from '../../shared/config/constants';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -40,7 +41,8 @@ export default function LoginPage() {
     //username = admin@bukapedia.com
     //password = admin123
     else if (username === 'admin@bukapedia.com' && password === 'admin123') {
-      router.push('/cart');
+      localStorage.setItem('token', ADMIN_TOKEN);
+      router.push('/admin/products');
     } else {
       toast.error('Wrong Username/Email or Password!');
       setUserName('');
@@ -48,40 +50,47 @@ export default function LoginPage() {
     }
   };
   return (
-    <main>
+    <div className="login">
       <NextSeo title="Login" />
       {/* navbar */}
       <MyNavbar />
-      <Container fluid="lg my-5 pb-5 pt-3">
-        <Form className="container" onSubmit={handleSubmit}>
-          <Form.Group className="mb-3">
-            <Form.Label>Username/Email</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter username/email"
-              style={{ width: '50%' }}
-              value={username}
-              onChange={(e) => setUserName(e.target.value)}
-            />
-          </Form.Group>
 
-          <Form.Group className="mb-3" controlId="formBasicPassword">
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Password"
-              style={{ width: '50%' }}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </Form.Group>
+      <main className="my-5 login-container">
+        <Container fluid="lg">
+          <h1 className="my-5">Login to your account</h1>
 
-          <Button variant="primary" type="submit">
-            Submit
-          </Button>
-        </Form>
-      </Container>
+          <Form className="" onSubmit={handleSubmit}>
+            <Form.Group className="mb-3">
+              <Form.Label>Username/Email</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter username/email"
+                style={{ width: '50%' }}
+                value={username}
+                onChange={(e) => setUserName(e.target.value)}
+              />
+            </Form.Group>
+
+            <Form.Group className="" controlId="formBasicPassword">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Password"
+                style={{ width: '50%' }}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </Form.Group>
+
+            <Button className="my-5" variant="primary" type="submit">
+              Submit
+            </Button>
+          </Form>
+        </Container>
+      </main>
+
+      {/* footer */}
       <MyFooter />
-    </main>
+    </div>
   );
 }
