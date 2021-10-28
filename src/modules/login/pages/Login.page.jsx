@@ -13,7 +13,7 @@ export default function LoginPage() {
   const [user, setUser] = useState([]);
   const [username, setUserName] = useState();
   const [password, setPassword] = useState();
-  console.log(username, password);
+
   useEffect(() => {
     axios.get(`https://fakestoreapi.com/users/2`).then((res) => {
       const persons = res.data;
