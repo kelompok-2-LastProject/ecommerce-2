@@ -57,8 +57,10 @@ export default function ProductDetailPage() {
   }, [productId]);
 
   const onAddToCart = async () => {
+    const token = localStorage.getItem('token');
+
     // if not logged in
-    if (!token) {
+    if (!token.startsWith('eyJh')) {
       toast.warn('Please login first');
       await push('/login');
       return;

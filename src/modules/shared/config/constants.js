@@ -3,6 +3,9 @@ export const theme = {
     primary: '#04009A',
     white: '#fff',
     black: '#000',
+    greyDark: '#6B7280',
+    grey: '#D1D5DB',
+    greyLight: '#F3F4F6',
   },
 };
 
