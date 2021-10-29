@@ -7,23 +7,27 @@ import { toast } from 'react-toastify';
 // files
 import MyNavbar from '../../shared/components/MyNavbar';
 import MyFooter from '../../shared/components/MyFooter';
-import useLocalStorage from '../../shared/hooks/useLocalStorage';
+import Loader from '../../shared/components/Loader';
 import { getProduct } from '../../shared/services/products';
 import { ADMIN_TOKEN } from '../../shared/config/constants';
 
 export default function ProductDetailPage() {
-  /* #region check if admin */
+  /* #region CHECK IF LOGGED IN AS ADMIN */
   const { push } = useRouter();
-  const [token] = useLocalStorage('token', null);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     (async () => {
+      const token = localStorage.getItem('token');
+
       if (token === ADMIN_TOKEN) {
         await push('/admin/products'); // push to update products
       }
+
+      setIsReady(true);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, []);
   /* #endregion */
 
   /* #region MAIN */
@@ -53,8 +57,10 @@ export default function ProductDetailPage() {
   }, [productId]);
 
   const onAddToCart = async () => {
+    const token = localStorage.getItem('token');
+
     // if not logged in
-    if (!token) {
+    if (!token.startsWith('eyJh')) {
       toast.warn('Please login first');
       await push('/login');
       return;
@@ -68,70 +74,82 @@ export default function ProductDetailPage() {
     <div className="product-detail">
       <NextSeo title={product?.title} />
 
-      {/* navbar */}
-      <MyNavbar />
+      {isReady ? (
+        <>
+          {/* navbar */}
+          <MyNavbar />
 
-      <main className="home-container">
-        <Container fluid="lg">
-          <h1 className="my-5">Product Detail</h1>
+          <main className="home-container">
+            <Container fluid="lg">
+              <h1 className="my-5">Product Detail</h1>
 
-          {isLoading && (
-            <Row className="min-vh-100 min-vw-100 justify-content-center align-items-center">
-              <Spinner animation="border" variant="primary" />
-            </Row>
-          )}
+              {isLoading && (
+                <Row className="mx-auto min-vh-100">
+                  <Spinner
+                    className="mt-5"
+                    animation="border"
+                    variant="primary"
+                  />
+                </Row>
+              )}
 
-          {product && (
-            <Row className="min-vh-100 min-vw-100">
-              <Col xs={4}>
-                <Image
-                  className="rounded"
-                  alt={product?.title}
-                  src={product?.image}
-                  width="90%"
-                  height="70%"
-                />
-              </Col>
+              {product && (
+                <Row className="min-vh-100 min-vw-100">
+                  <Col xs={4}>
+                    <Image
+                      className="rounded"
+                      alt={product?.title}
+                      src={product?.image}
+                      width="90%"
+                      height="70%"
+                    />
+                  </Col>
 
-              <Col xs={8}>
-                {/* title */}
-                <h1 className="mb-2 fs-5 fw-bolder">{product?.title}</h1>
+                  <Col xs={8}>
+                    {/* title */}
+                    <h1 className="mb-2 fs-5 fw-bolder">{product?.title}</h1>
 
-                {/* price + quantity + rating */}
-                <div className="d-flex justify-content-start align-items-center w-100">
-                  <p className="">Price: ${product?.price}</p>
-                  <p className="mx-5">Quantity: HARD_CODED</p>
-                  <div className="d-flex">
-                    <FaStar className="mt-1 text-warning " />
-                    <p style={{ marginLeft: '1rem' }}>
-                      {product?.rating?.rate} {`(${product?.rating?.count})`}
+                    {/* price + quantity + rating */}
+                    <div className="d-flex justify-content-start align-items-center w-100">
+                      <p className="">Price: ${product?.price}</p>
+                      <p className="mx-5">Quantity: HARD_CODED</p>
+                      <div className="d-flex">
+                        <FaStar className="mt-1 text-warning " />
+                        <p style={{ marginLeft: '1rem' }}>
+                          {product?.rating?.rate}{' '}
+                          {`(${product?.rating?.count})`}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* category */}
+                    <div className="mt-2 d-flex justify-content-start align-items-center w-100">
+                      <p className="px-2 py-1 text-white rounded bg-secondary">
+                        {product?.category}
+                      </p>
+                    </div>
+
+                    {/* desc */}
+                    <p className="my-5 fst-italic text-secondary w-75">
+                      {product?.description}
                     </p>
-                  </div>
-                </div>
 
-                {/* category */}
-                <div className="mt-2 d-flex justify-content-start align-items-center w-100">
-                  <p className="px-2 py-1 text-white rounded bg-secondary">
-                    {product?.category}
-                  </p>
-                </div>
+                    {/* add to cart */}
+                    <Button variant="primary" onClick={onAddToCart}>
+                      Add to cart
+                    </Button>
+                  </Col>
+                </Row>
+              )}
+            </Container>
+          </main>
 
-                {/* desc */}
-                <p className="my-5 fst-italic text-secondary w-75">
-                  {product?.description}
-                </p>
-
-                {/* add to cart */}
-                <Button variant="primary" onClick={onAddToCart}>
-                  Add to cart
-                </Button>
-              </Col>
-            </Row>
-          )}
-        </Container>
-      </main>
-
-      <MyFooter />
+          {/* footer */}
+          <MyFooter />
+        </>
+      ) : (
+        <Loader />
+      )}
     </div>
   );
 }

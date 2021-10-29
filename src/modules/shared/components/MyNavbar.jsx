@@ -1,10 +1,9 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { Navbar, Container, Nav, Button, Image } from 'react-bootstrap';
 // files
-import useLocalStorage from '../hooks/useLocalStorage';
-import { theme } from '../config/constants';
+import { ADMIN_TOKEN, theme } from '../config/constants';
 
 const styles = {
   navLinkFirst: {
@@ -18,7 +17,23 @@ const styles = {
 };
 
 const MyNavbar = () => {
-  const [isLoggedIn, setIsLoggedIn] = useLocalStorage('isLoggedIn', false);
+  /* #region CHECK IF LOGGED IN */
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    (() => {
+      const token = localStorage.getItem('token');
+
+      if (token.startsWith('eyJh') || token === ADMIN_TOKEN) {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
+    })();
+  }, []);
+  /* #endregion */
+
+  /* #region MAIN */
   const { push } = useRouter();
 
   const onLogin = async () => {
@@ -29,21 +44,7 @@ const MyNavbar = () => {
     setIsLoggedIn(false);
     await push('/');
   };
-
-  const memoizedButton = useMemo(
-    () =>
-      isLoggedIn ? (
-        <Button variant="danger" onClick={onLogout}>
-          Logout
-        </Button>
-      ) : (
-        <Button variant="primary" onClick={onLogin}>
-          Login
-        </Button>
-      ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [isLoggedIn],
-  );
+  /* #endregion */
 
   return (
     <Navbar expand="md" style={{ backgroundColor: theme.colors.primary }}>
@@ -65,7 +66,7 @@ const MyNavbar = () => {
 
         <Navbar.Collapse id="navbarScroll">
           <Nav
-            className="me-auto my-2 mx-3 my-lg-0"
+            className="mx-3 my-2 me-auto my-lg-0"
             style={{ maxHeight: '100px' }}
             navbarScroll
           >
@@ -80,7 +81,17 @@ const MyNavbar = () => {
             </Link>
           </Nav>
 
-          <div className="d-flex">{memoizedButton}</div>
+          <div className="d-flex">
+            {isLoggedIn ? (
+              <Button variant="danger" onClick={onLogout}>
+                Logout
+              </Button>
+            ) : (
+              <Button variant="primary" onClick={onLogin}>
+                Login
+              </Button>
+            )}
+          </div>
         </Navbar.Collapse>
       </Container>
     </Navbar>

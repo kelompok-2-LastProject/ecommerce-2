@@ -1,9 +1,3 @@
-const Cart = () => {
-  return (
-    <div>
-      <h1>Cart page</h1>
-    </div>
-  );
-};
+import CartPage from '../../modules/cart/pages/Cart.page';
 
-export default Cart;
+export default CartPage;

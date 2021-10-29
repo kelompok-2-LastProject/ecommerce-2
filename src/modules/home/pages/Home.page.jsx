@@ -6,24 +6,28 @@ import { useRouter } from 'next/router';
 // files
 import MyNavbar from '../../shared/components/MyNavbar';
 import MyFooter from '../../shared/components/MyFooter';
-import useLocalStorage from '../../shared/hooks/useLocalStorage';
+import Loader from '../../shared/components/Loader';
 import truncateText from '../../shared/utils/truncateText';
 import { getProducts } from '../../shared/services/products';
 import { ADMIN_TOKEN } from '../../shared/config/constants';
 
 export default function HomePage() {
-  /* #region check if admin */
+  /* #region CHECK IF LOGGED IN AS ADMIN */
   const { push } = useRouter();
-  const [token] = useLocalStorage('token', null);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     (async () => {
+      const token = localStorage.getItem('token');
+
       if (token === ADMIN_TOKEN) {
         await push('/admin/products'); // push to update products
       }
+
+      setIsReady(true);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, []);
   /* #endregion */
 
   /* #region MAIN */
@@ -63,54 +67,61 @@ export default function HomePage() {
     <div className="home">
       <NextSeo title="Home" />
 
-      {/* navbar */}
-      <MyNavbar />
+      {isReady ? (
+        <>
+          {/* navbar */}
+          <MyNavbar />
 
-      <main className="pb-5 home-container">
-        <Container fluid="lg">
-          <h1 className="my-5">Products List</h1>
+          <main className="pb-5 home-container">
+            <Container fluid="lg">
+              <h1 className="my-5">Products List</h1>
 
-          <h6 className="">Berikut produk kami</h6>
+              <h6 className="">Berikut produk kami</h6>
 
-          <Row xs={1} sm={2} lg={3} xxl={4} className="my-5 g-4">
-            {products?.map((product) => (
-              <Col key={product.id}>
-                <Card>
-                  <Card.Img
-                    variant="top"
-                    src={product.image}
-                    height="300"
-                    width="300"
-                  />
+              <Row xs={1} sm={2} lg={3} xxl={4} className="my-5 g-4">
+                {products?.map((product) => (
+                  <Col key={product.id}>
+                    <Card>
+                      <Card.Img
+                        variant="top"
+                        src={product.image}
+                        height="300"
+                        width="300"
+                      />
 
-                  <Card.Body className="p-5">
-                    <Card.Title className="fw-bolder">
-                      {truncateText(product.title)}
-                    </Card.Title>
-                    <Card.Text className="fw-lighter">
-                      {truncateText(product.description)}
-                    </Card.Text>
-                  </Card.Body>
+                      <Card.Body className="p-5">
+                        <Card.Title className="fw-bolder">
+                          {truncateText(product.title)}
+                        </Card.Title>
+                        <Card.Text className="fw-lighter">
+                          {truncateText(product.description)}
+                        </Card.Text>
+                      </Card.Body>
 
-                  <Card.Footer className="px-5 py-4 d-flex justify-content-between">
-                    <Button
-                      variant="secondary"
-                      onClick={() => onDetail(product.id)}
-                    >
-                      Detail
-                    </Button>
-                    <Button variant="primary" onClick={onAddToCart}>
-                      Add to cart
-                    </Button>
-                  </Card.Footer>
-                </Card>
-              </Col>
-            ))}
-          </Row>
-        </Container>
-      </main>
+                      <Card.Footer className="px-5 py-4 d-flex justify-content-between">
+                        <Button
+                          variant="secondary"
+                          onClick={() => onDetail(product.id)}
+                        >
+                          Detail
+                        </Button>
+                        <Button variant="primary" onClick={onAddToCart}>
+                          Add to cart
+                        </Button>
+                      </Card.Footer>
+                    </Card>
+                  </Col>
+                ))}
+              </Row>
+            </Container>
+          </main>
 
-      <MyFooter />
+          {/* footer */}
+          <MyFooter />
+        </>
+      ) : (
+        <Loader />
+      )}
     </div>
   );
 }
