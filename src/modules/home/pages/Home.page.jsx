@@ -78,41 +78,45 @@ export default function HomePage() {
 
               <h6 className="">Berikut produk kami</h6>
 
-              <Row xs={1} sm={2} lg={3} xxl={4} className="my-5 g-4">
-                {products?.map((product) => (
-                  <Col key={product.id}>
-                    <Card>
-                      <Card.Img
-                        variant="top"
-                        src={product.image}
-                        height="300"
-                        width="300"
-                      />
+              {products.length < 1 ? (
+                <Loader />
+              ) : (
+                <Row xs={1} sm={2} lg={3} xxl={4} className="my-5 g-4">
+                  {products?.map((product) => (
+                    <Col key={product.id}>
+                      <Card>
+                        <Card.Img
+                          variant="top"
+                          src={product.image}
+                          height="300"
+                          width="300"
+                        />
 
-                      <Card.Body className="p-5">
-                        <Card.Title className="fw-bolder">
-                          {truncateText(product.title)}
-                        </Card.Title>
-                        <Card.Text className="fw-lighter">
-                          {truncateText(product.description)}
-                        </Card.Text>
-                      </Card.Body>
+                        <Card.Body className="p-5">
+                          <Card.Title className="fw-bolder">
+                            {truncateText(product.title)}
+                          </Card.Title>
+                          <Card.Text className="fw-lighter">
+                            {truncateText(product.description)}
+                          </Card.Text>
+                        </Card.Body>
 
-                      <Card.Footer className="px-5 py-4 d-flex justify-content-between">
-                        <Button
-                          variant="secondary"
-                          onClick={() => onDetail(product.id)}
-                        >
-                          Detail
-                        </Button>
-                        <Button variant="primary" onClick={onAddToCart}>
-                          Add to cart
-                        </Button>
-                      </Card.Footer>
-                    </Card>
-                  </Col>
-                ))}
-              </Row>
+                        <Card.Footer className="px-5 py-4 d-flex justify-content-between">
+                          <Button
+                            variant="secondary"
+                            onClick={() => onDetail(product.id)}
+                          >
+                            Detail
+                          </Button>
+                          <Button variant="primary" onClick={onAddToCart}>
+                            Add to cart
+                          </Button>
+                        </Card.Footer>
+                      </Card>
+                    </Col>
+                  ))}
+                </Row>
+              )}
             </Container>
           </main>
 

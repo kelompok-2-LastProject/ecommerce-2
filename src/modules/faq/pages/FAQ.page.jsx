@@ -7,13 +7,13 @@ import { FAQs } from '../mocks';
 
 const FAQPage = () => {
   return (
-    <div className="cart">
-      <NextSeo title="Cart" />
+    <div className="faq">
+      <NextSeo title="FAQ" />
 
       {/* navbar */}
       <MyNavbar />
 
-      <main className="cart-container min-vh-100">
+      <main className="faq-container min-vh-100">
         <Container fluid="lg">
           <h1 className="my-5">Frequently Asked Questions (FAQ)</h1>
 
