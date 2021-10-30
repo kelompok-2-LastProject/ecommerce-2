@@ -14,13 +14,13 @@ import MyFooter from '../../shared/components/MyFooter';
 
 const SupportPage = () => {
   return (
-    <div className="cart">
-      <NextSeo title="Cart" />
+    <div className="support">
+      <NextSeo title="Support" />
 
       {/* navbar */}
       <MyNavbar />
 
-      <main className="cart-container min-vh-100">
+      <main className="support-container min-vh-100">
         <Container fluid="lg">
           <h1 className="my-5">Support</h1>
 

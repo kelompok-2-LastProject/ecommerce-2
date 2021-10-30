@@ -1,15 +1,21 @@
+import Link from 'next/link';
 import { NextSeo } from 'next-seo';
 import { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
+import { useSelector, useDispatch } from 'react-redux';
 // files
 import MyNavbar from '../../shared/components/MyNavbar';
 import MyFooter from '../../shared/components/MyFooter';
 import Loader from '../../shared/components/Loader';
 import truncateText from '../../shared/utils/truncateText';
-import { getProducts } from '../../shared/services/products';
 import { ADMIN_TOKEN } from '../../shared/config/constants';
+import { getProducts } from '../../shared/services/products';
+import {
+  addInitialProducts,
+  productsSelector,
+} from '../../shared/redux/slices/products';
 
 export default function HomePage() {
   /* #region CHECK IF LOGGED IN AS ADMIN */
@@ -31,10 +37,17 @@ export default function HomePage() {
   /* #endregion */
 
   /* #region MAIN */
-  const [products, setProducts] = useState([]);
+  const products = useSelector(productsSelector);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     (async () => {
+      // check if products is already exists
+      if (products.count > 0) {
+        return;
+      }
+
+      // get products from API
       const { status, data } = await getProducts();
 
       // check API call status
@@ -43,24 +56,11 @@ export default function HomePage() {
         return;
       }
 
-      setProducts(data);
+      // add products to redux
+      dispatch(addInitialProducts(data));
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const onDetail = async (productId) => {
-    await push(`/products/${productId}`);
-  };
-
-  const onAddToCart = async () => {
-    // if not logged in
-    if (!token) {
-      toast.warn('Please login first');
-      await push('/login');
-      return;
-    }
-
-    // TODO: add to REDUX cart
-  };
   /* #endregion */
 
   return (
@@ -76,16 +76,21 @@ export default function HomePage() {
             <Container fluid="lg">
               <h1 className="my-5">Products List</h1>
 
-              <h6 className="">Berikut produk kami</h6>
+              <h6 className="">
+                fe:male memiliki banyak pilihan produk dari banyak kategori,
+                mulai dari pakaian pria, pakaian wanita, perhiasan, dan
+                elektronik.
+              </h6>
 
-              {products.length < 1 ? (
+              {products.count === 0 ? (
                 <Loader />
               ) : (
                 <Row xs={1} sm={2} lg={3} xxl={4} className="my-5 g-4">
-                  {products?.map((product) => (
+                  {products.values.map((product) => (
                     <Col key={product.id}>
                       <Card>
                         <Card.Img
+                          className="p-5"
                           variant="top"
                           src={product.image}
                           height="300"
@@ -93,24 +98,18 @@ export default function HomePage() {
                         />
 
                         <Card.Body className="p-5">
-                          <Card.Title className="fw-bolder">
-                            {truncateText(product.title)}
-                          </Card.Title>
-                          <Card.Text className="fw-lighter">
+                          <Link href={`/products/${product.id}`}>
+                            <a className="fw-bolder text-decoration-none">
+                              {truncateText(product.title)}
+                            </a>
+                          </Link>
+                          <Card.Text className="mt-2 fw-lighter fst-italic">
                             {truncateText(product.description)}
                           </Card.Text>
                         </Card.Body>
 
-                        <Card.Footer className="px-5 py-4 d-flex justify-content-between">
-                          <Button
-                            variant="secondary"
-                            onClick={() => onDetail(product.id)}
-                          >
-                            Detail
-                          </Button>
-                          <Button variant="primary" onClick={onAddToCart}>
-                            Add to cart
-                          </Button>
+                        <Card.Footer className="px-5 py-4">
+                          <strong>Quantity: {product.quantity}</strong>
                         </Card.Footer>
                       </Card>
                     </Col>
