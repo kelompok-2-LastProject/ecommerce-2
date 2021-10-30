@@ -2,14 +2,19 @@ import { useRouter } from 'next/router';
 import { NextSeo } from 'next-seo';
 import { useEffect, useMemo, useState } from 'react';
 import { FaStar } from 'react-icons/fa';
-import { Container, Row, Col, Image, Spinner, Button } from 'react-bootstrap';
+import { Container, Row, Col, Image, Button, Form } from 'react-bootstrap';
 import { toast } from 'react-toastify';
+import { useSelector, useDispatch } from 'react-redux';
 // files
 import MyNavbar from '../../shared/components/MyNavbar';
 import MyFooter from '../../shared/components/MyFooter';
 import Loader from '../../shared/components/Loader';
-import { getProduct } from '../../shared/services/products';
 import { ADMIN_TOKEN } from '../../shared/config/constants';
+import { getProducts } from '../../shared/services/products';
+import {
+  addInitialProducts,
+  productsSelector,
+} from '../../shared/redux/slices/products';
 
 export default function ProductDetailPage() {
   /* #region CHECK IF LOGGED IN AS ADMIN */
@@ -30,7 +35,12 @@ export default function ProductDetailPage() {
   }, []);
   /* #endregion */
 
-  /* #region MAIN */
+  /* #region GET PRODUCT DATA */
+  const products = useSelector(productsSelector);
+  const dispatch = useDispatch();
+  const [product, setProduct] = useState(null);
+
+  // get product.id from URL path
   const productId = useMemo(() => {
     const splittedURL = window.location.pathname.split('/');
     const productId = splittedURL[splittedURL.length - 1];
@@ -38,23 +48,47 @@ export default function ProductDetailPage() {
     return productId;
   }, []);
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [product, setProduct] = useState(null);
-
   useEffect(() => {
     (async () => {
-      const { status, data } = await getProduct(productId);
-
-      // check API call status
-      if (status !== 200) {
-        toast.error('Error getting product detail!');
+      // check if products is already exists
+      if (products.count > 0) {
+        // find product using productId from redux
+        const productFound = products.values.find(
+          (prod) => prod.id === +productId,
+        );
+        setProduct(productFound);
         return;
       }
 
-      setIsLoading(false);
-      setProduct(data);
+      // get products from API
+      const { status, data } = await getProducts();
+
+      // check API call status
+      if (status !== 200) {
+        toast.error('Error getting products list!');
+        return;
+      }
+
+      // add products to redux
+      dispatch(addInitialProducts(data));
+
+      // find product using productId from redux
+      const productFound2 = data.find((prod) => prod.id === +productId);
+      setProduct(productFound2);
+      // setInputQuantity(productFound2.quantity);
     })();
-  }, [productId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  /* #endregion */
+
+  /* #region MAIN */
+  const [inputQuantity, setInputQuantity] = useState('1');
+
+  const onChangeQuantity = (e) => {
+    // TODO: check from product.quantity, if greater than it, then disable button
+
+    setInputQuantity(e.target.value);
+  };
 
   const onAddToCart = async () => {
     const token = localStorage.getItem('token');
@@ -83,17 +117,9 @@ export default function ProductDetailPage() {
             <Container fluid="lg">
               <h1 className="my-5">Product Detail</h1>
 
-              {isLoading && (
-                <Row className="mx-auto min-vh-100">
-                  <Spinner
-                    className="mt-5"
-                    animation="border"
-                    variant="primary"
-                  />
-                </Row>
-              )}
-
-              {product && (
+              {product === null ? (
+                <Loader />
+              ) : (
                 <Row className="min-vh-100 min-vw-100">
                   <Col xs={4}>
                     <Image
@@ -112,7 +138,7 @@ export default function ProductDetailPage() {
                     {/* price + quantity + rating */}
                     <div className="d-flex justify-content-start align-items-center w-100">
                       <p className="">Price: ${product?.price}</p>
-                      <p className="mx-5">Quantity: HARD_CODED</p>
+                      <p className="mx-5">Quantity: {product?.quantity}</p>
                       <div className="d-flex">
                         <FaStar className="mt-1 text-warning " />
                         <p style={{ marginLeft: '1rem' }}>
@@ -134,10 +160,27 @@ export default function ProductDetailPage() {
                       {product?.description}
                     </p>
 
-                    {/* add to cart */}
-                    <Button variant="primary" onClick={onAddToCart}>
-                      Add to cart
-                    </Button>
+                    {/* add to cart / update cart */}
+                    <Form className="mt-2 d-flex flex-column justify-content-start w-100">
+                      <Form.Group className="">
+                        <Form.Label>Input quantity: </Form.Label>
+                        <Form.Control
+                          type="text"
+                          style={{ width: '25%' }}
+                          value={inputQuantity}
+                          onChange={onChangeQuantity}
+                        />
+                      </Form.Group>
+
+                      <Button
+                        className="mt-2"
+                        style={{ width: '25%' }}
+                        variant="primary"
+                        onClick={onAddToCart}
+                      >
+                        Add to cart
+                      </Button>
+                    </Form>
                   </Col>
                 </Row>
               )}

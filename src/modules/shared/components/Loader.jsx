@@ -1,10 +1,10 @@
-import { Container } from 'react-bootstrap';
+import { Row, Spinner } from 'react-bootstrap';
 
 const Loader = () => {
   return (
-    <Container fluid="lg">
-      <h1 className="my-5">Loading...</h1>
-    </Container>
+    <Row className="mx-auto min-vh-100">
+      <Spinner className="mt-5" animation="border" variant="primary" />
+    </Row>
   );
 };
 

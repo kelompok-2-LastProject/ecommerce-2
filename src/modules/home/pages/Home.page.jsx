@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { NextSeo } from 'next-seo';
 import { useEffect, useState } from 'react';
-import { Container, Row, Col, Card, Button } from 'react-bootstrap';
+import { Container, Row, Col, Card } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import { useSelector, useDispatch } from 'react-redux';
@@ -36,7 +36,7 @@ export default function HomePage() {
   }, []);
   /* #endregion */
 
-  /* #region MAIN */
+  /* #region GET PRODUCTS DATA */
   const products = useSelector(productsSelector);
   const dispatch = useDispatch();
 
