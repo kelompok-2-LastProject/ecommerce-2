@@ -61,6 +61,14 @@ export default function ProductDetailPage() {
     }
 
     // TODO: add to REDUX cart
+    /*
+      1. add to chart dari product detail
+         1.1 user bisa tmbh quantity langsung dari product detail
+         1.2 jika quantity yang dinput user > quantity product, error atau button add to cart disable
+         1.3 jika button add to cart dklik, cek apakah produk itu sdh ad d cart atau belum
+         1.4 jika produk blm ada, tmbhkan produk ke cart
+         1.5 jika produk sudah ada, update quantity yang ada di cart
+    */
   };
   /* #endregion */
 

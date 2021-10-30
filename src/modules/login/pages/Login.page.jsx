@@ -52,8 +52,11 @@ export default function LoginPage() {
       <NextSeo title="Login" />
       {/* navbar */}
       <MyNavbar />
-      <Container fluid="lg my-5 pb-5 pt-3">
-        <Form className="container" onSubmit={handleSubmit}>
+
+      <Container fluid="lg">
+        <h4 className="my-5 fw-bold">Login To Your Account</h4>
+        {/* <h3 className="mx-2">Login To Your Account</h3> */}
+        <Form className="container mb-5 pb-5" onSubmit={handleSubmit}>
           <Form.Group className="mb-3">
             <Form.Label>Username/Email</Form.Label>
             <Form.Control
