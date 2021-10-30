@@ -10,6 +10,7 @@ const cartSlice = createSlice({
     addProductToCart: (state, action) => {
       // action.payload === Product
       state.values = [...state.values, action.payload];
+      state.count++;
     },
     updateProductFromCart: (state, action) => {
       // action.payload === Product
@@ -27,6 +28,7 @@ const cartSlice = createSlice({
         state.values = state.values.filter(
           (productCart) => productCart.id !== productId,
         );
+        state.count--;
       });
     },
   },

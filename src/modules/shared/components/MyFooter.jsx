@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Container, Row, Col, Image } from 'react-bootstrap';
-import { FaInstagram, FaLinkedin, FaGithub, FaFacebook } from 'react-icons/fa';
+import { FaGithub } from 'react-icons/fa';
 // files
 import { theme } from '../config/constants';
 
@@ -54,16 +54,18 @@ const MyFooter = () => {
 
         <Row className="py-4 mx-auto w-25 justify-content-center align-items-center">
           <Col className="text-center">
-            <FaInstagram className="text-danger fs-2" />
+            <Link href="https://github.com/rifandani">
+              <a>
+                <FaGithub role="button" className="text-white fs-2" />
+              </a>
+            </Link>
           </Col>
           <Col className="text-center">
-            <FaLinkedin className=" text-primary fs-2" />
-          </Col>
-          <Col className="text-center">
-            <FaGithub className="text-white fs-2" />
-          </Col>
-          <Col className="text-center">
-            <FaFacebook className=" text-primary fs-2" />
+            <Link href="https://github.com/verara15">
+              <a>
+                <FaGithub role="button" className="text-danger fs-2" />
+              </a>
+            </Link>
           </Col>
         </Row>
 

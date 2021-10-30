@@ -114,7 +114,7 @@ export default function ProductDetailPage() {
     dispatch(
       addProductToCart({
         ...product,
-        quantity: inputQuantity,
+        quantity: +inputQuantity,
       }),
     );
     toast.info('Product added to cart');
