@@ -15,6 +15,7 @@ import {
   addInitialProducts,
   productsSelector,
 } from '../../shared/redux/slices/products';
+import { addProductToCart } from '../../shared/redux/slices/cart';
 
 export default function ProductDetailPage() {
   /* #region CHECK IF LOGGED IN AS ADMIN */
@@ -94,13 +95,29 @@ export default function ProductDetailPage() {
     const token = localStorage.getItem('token');
 
     // if not logged in
-    if (!token.startsWith('eyJh')) {
+    if (token && !token.startsWith('eyJh')) {
       toast.warn('Please login first');
       await push('/login');
       return;
     }
 
-    // TODO: add to REDUX cart
+    // when manually inputted -> check if it's less than 1 || more than product.quantity
+    if (inputQuantity < 1) {
+      toast.warn('Input quantity cannot be less than 1');
+      return;
+    } else if (inputQuantity > product?.quantity) {
+      toast.warn(`Input quantity cannot be more than ${product?.quantity}`);
+      return;
+    }
+
+    // add to REDUX cart
+    dispatch(
+      addProductToCart({
+        ...product,
+        quantity: inputQuantity,
+      }),
+    );
+    toast.info('Product added to cart');
   };
   /* #endregion */
 
@@ -165,7 +182,9 @@ export default function ProductDetailPage() {
                       <Form.Group className="">
                         <Form.Label>Input quantity: </Form.Label>
                         <Form.Control
-                          type="text"
+                          type="number"
+                          min={1}
+                          max={product?.quantity}
                           style={{ width: '25%' }}
                           value={inputQuantity}
                           onChange={onChangeQuantity}

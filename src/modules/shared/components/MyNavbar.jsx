@@ -24,7 +24,7 @@ const MyNavbar = () => {
     (() => {
       const token = localStorage.getItem('token');
 
-      if (token.startsWith('eyJh') || token === ADMIN_TOKEN) {
+      if ((token && token.startsWith('eyJh')) || token === ADMIN_TOKEN) {
         setIsLoggedIn(true);
       } else {
         setIsLoggedIn(false);
@@ -34,13 +34,14 @@ const MyNavbar = () => {
   /* #endregion */
 
   /* #region MAIN */
-  const { push } = useRouter();
+  const { push, pathname } = useRouter();
 
   const onLogin = async () => {
     await push('/login');
   };
 
   const onLogout = async () => {
+    localStorage.removeItem('token');
     setIsLoggedIn(false);
     await push('/');
   };
@@ -73,6 +74,11 @@ const MyNavbar = () => {
             <Link href="/" passHref>
               <Nav.Link style={styles.navLink}>Home</Nav.Link>
             </Link>
+            {isLoggedIn && (
+              <Link href="/cart" passHref>
+                <Nav.Link style={styles.navLink}>Cart</Nav.Link>
+              </Link>
+            )}
             <Link href="/faq" passHref>
               <Nav.Link style={styles.navLink}>FAQ</Nav.Link>
             </Link>
@@ -81,17 +87,19 @@ const MyNavbar = () => {
             </Link>
           </Nav>
 
-          <div className="d-flex">
-            {isLoggedIn ? (
-              <Button variant="danger" onClick={onLogout}>
-                Logout
-              </Button>
-            ) : (
-              <Button variant="primary" onClick={onLogin}>
-                Login
-              </Button>
-            )}
-          </div>
+          {pathname !== '/login' && (
+            <div className="d-flex">
+              {isLoggedIn ? (
+                <Button variant="danger" onClick={onLogout}>
+                  Logout
+                </Button>
+              ) : (
+                <Button variant="primary" onClick={onLogin}>
+                  Login
+                </Button>
+              )}
+            </div>
+          )}
         </Navbar.Collapse>
       </Container>
     </Navbar>

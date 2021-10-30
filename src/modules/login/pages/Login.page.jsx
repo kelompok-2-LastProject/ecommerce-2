@@ -19,10 +19,12 @@ export default function LoginPage() {
     (async () => {
       const token = localStorage.getItem('token');
 
-      if (token.startsWith('eyJh')) {
+      if (token && token.startsWith('eyJh')) {
         await router.push('/'); // push to home page
+        return;
       } else if (token === ADMIN_TOKEN) {
         await router.push('/admin/products'); // push to admin/products
+        return;
       }
 
       setIsReady(true);
