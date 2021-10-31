@@ -1,13 +1,12 @@
 import Link from 'next/link';
 import { NextSeo } from 'next-seo';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import {
   Container,
   Row,
   Col,
   Card,
   Form,
-  Button,
   InputGroup,
   Dropdown,
 } from 'react-bootstrap';
@@ -18,6 +17,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import MyNavbar from '../../shared/components/MyNavbar';
 import MyFooter from '../../shared/components/MyFooter';
 import Loader from '../../shared/components/Loader';
+import MyPagination from '../../shared/components/MyPagination';
 import truncateText from '../../shared/utils/truncateText';
 import { ADMIN_TOKEN } from '../../shared/config/constants';
 import { getProducts } from '../../shared/services/products';
@@ -74,7 +74,7 @@ export default function HomePage() {
   }, []);
   /* #endregion */
 
-  /* #region SORT PRODUCT */
+  /* #region SORT PRODUCTS */
   const [selectedSortOption, setSelectedSortOption] = useState('default');
   const onClickSort = (selectedOption) => {
     dispatch(sortProducts(selectedOption));
@@ -82,7 +82,7 @@ export default function HomePage() {
   };
   /* #endregion */
 
-  /* #region SEARCH PRODUCT */
+  /* #region SEARCH PRODUCTS */
   const [searchTerm, setSearchTerm] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const debouncedSearchTerm = useDebounce(searchTerm, 1000);
@@ -119,6 +119,17 @@ export default function HomePage() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearchTerm]);
+  /* #endregion */
+
+  /* #region PAGINATION PRODUCTS */
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(4);
+
+  const paginatedProducts = useMemo(() => {
+    const firstPageIndex = (currentPage - 1) * pageSize;
+    const lastPageIndex = firstPageIndex + pageSize;
+    return filteredProducts?.slice(firstPageIndex, lastPageIndex);
+  }, [currentPage, pageSize, filteredProducts]);
   /* #endregion */
 
   return (
@@ -190,7 +201,7 @@ export default function HomePage() {
                         <h1>No product found</h1>
                       </Col>
                     ) : (
-                      filteredProducts.map((product) => (
+                      paginatedProducts?.map((product) => (
                         <Col key={product.id}>
                           <Card>
                             <Card.Img
@@ -228,6 +239,14 @@ export default function HomePage() {
                       ))
                     )}
                   </Row>
+
+                  <MyPagination
+                    className="my-5"
+                    currentPage={currentPage}
+                    totalCount={filteredProducts?.length}
+                    pageSize={pageSize}
+                    onPageChange={(page) => setCurrentPage(page)}
+                  />
                 </section>
               )}
             </Container>
