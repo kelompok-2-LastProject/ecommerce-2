@@ -8,10 +8,10 @@ import { Form, Button, Container } from 'react-bootstrap';
 import MyNavbar from '../../shared/components/MyNavbar';
 import MyFooter from '../../shared/components/MyFooter';
 import Loader from '../../shared/components/Loader';
-import { ADMIN_TOKEN } from '../../shared/config/constants';
+import { ADMIN_TOKEN, USER_TOKEN } from '../../shared/config/constants';
 
 export default function LoginPage() {
-  /* #region CHECK IF LOGGED IN AS USER / ADMIN */
+  /* #region CHECK IF NOT LOGGED IN */
   const router = useRouter();
   const [isReady, setIsReady] = useState(false);
 
@@ -19,10 +19,14 @@ export default function LoginPage() {
     (async () => {
       const token = localStorage.getItem('token');
 
-      if (token.startsWith('eyJh')) {
-        await router.push('/'); // push to home page
+      if (token === USER_TOKEN) {
+        toast.warn('You are already logged in as user');
+        await router.push('/');
+        return;
       } else if (token === ADMIN_TOKEN) {
-        await router.push('/admin/products'); // push to admin/products
+        toast.warn('You are already logged in as admin');
+        await router.push('/admin/products');
+        return;
       }
 
       setIsReady(true);

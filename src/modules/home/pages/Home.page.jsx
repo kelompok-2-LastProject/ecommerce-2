@@ -1,15 +1,32 @@
+import Link from 'next/link';
 import { NextSeo } from 'next-seo';
 import { useEffect, useState } from 'react';
-import { Container, Row, Col, Card, Button } from 'react-bootstrap';
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Form,
+  Button,
+  InputGroup,
+  Dropdown,
+} from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
+import { useSelector, useDispatch } from 'react-redux';
 // files
 import MyNavbar from '../../shared/components/MyNavbar';
 import MyFooter from '../../shared/components/MyFooter';
 import Loader from '../../shared/components/Loader';
 import truncateText from '../../shared/utils/truncateText';
-import { getProducts } from '../../shared/services/products';
 import { ADMIN_TOKEN } from '../../shared/config/constants';
+import { getProducts } from '../../shared/services/products';
+import {
+  addInitialProducts,
+  sortProducts,
+  productsSelector,
+} from '../../shared/redux/slices/products';
+import useDebounce from '../../shared/hooks/useDebounce';
 
 export default function HomePage() {
   /* #region CHECK IF LOGGED IN AS ADMIN */
@@ -30,11 +47,18 @@ export default function HomePage() {
   }, []);
   /* #endregion */
 
-  /* #region MAIN */
-  const [products, setProducts] = useState([]);
+  /* #region GET PRODUCTS DATA */
+  const products = useSelector(productsSelector);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     (async () => {
+      // check if products is already exists
+      if (products.count > 0) {
+        return;
+      }
+
+      // get products from API
       const { status, data } = await getProducts();
 
       // check API call status
@@ -43,23 +67,34 @@ export default function HomePage() {
         return;
       }
 
-      setProducts(data);
+      // add products to redux
+      dispatch(addInitialProducts(data));
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  /* #endregion */
 
-  const onDetail = async (productId) => {
-    await push(`/products/${productId}`);
-  };
+  /* #region SEARCH PRODUCT */
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
+  const debouncedSearchTerm = useDebounce(searchTerm, 1000);
 
-  const onAddToCart = async () => {
-    // if not logged in
-    if (!token) {
-      toast.warn('Please login first');
-      await push('/login');
-      return;
-    }
+  // useEffect(() => {
+  //   if (debouncedSearchTerm) {
+  //     setIsSearching(true);
+  //     searchCharacters(debouncedSearchTerm).then((results) => {
+  //       setIsSearching(false);
+  //       setResults(results);
+  //     });
+  //   }
+  // }, [debouncedSearchTerm]);
+  /* #endregion */
 
-    // TODO: add to REDUX cart
+  /* #region SORT PRODUCT */
+  const [selectedSortOption, setSelectedSortOption] = useState('default');
+  const onClickSort = (selectedOption) => {
+    dispatch(sortProducts(selectedOption));
+    setSelectedSortOption(selectedOption);
   };
   /* #endregion */
 
@@ -76,46 +111,95 @@ export default function HomePage() {
             <Container fluid="lg">
               <h1 className="my-5">Products List</h1>
 
-              <h6 className="">Berikut produk kami</h6>
+              <h6 className="">
+                fe:male memiliki banyak pilihan produk dari banyak kategori,
+                mulai dari pakaian pria, pakaian wanita, perhiasan, dan
+                elektronik.
+              </h6>
 
-              {products.length < 1 ? (
+              {products.count === 0 ? (
                 <Loader />
               ) : (
-                <Row xs={1} sm={2} lg={3} xxl={4} className="my-5 g-4">
-                  {products?.map((product) => (
-                    <Col key={product.id}>
-                      <Card>
-                        <Card.Img
-                          variant="top"
-                          src={product.image}
-                          height="300"
-                          width="300"
+                <section>
+                  {/* search and sort */}
+                  <div className="mt-5 d-flex justify-content-between align-items-center">
+                    <Form className="d-flex flex-column justify-content-start w-25">
+                      <InputGroup className="">
+                        <Form.Control
+                          type="search"
+                          placeholder="Search product..."
+                          aria-label="Search product"
+                          aria-describedby="search-term"
+                          style={{ width: '50%%' }}
+                          onChange={(e) => setSearchTerm(e.target.value)}
                         />
+                        <Button variant="primary" id="search-button">
+                          Search
+                        </Button>
+                      </InputGroup>
+                    </Form>
 
-                        <Card.Body className="p-5">
-                          <Card.Title className="fw-bolder">
-                            {truncateText(product.title)}
-                          </Card.Title>
-                          <Card.Text className="fw-lighter">
-                            {truncateText(product.description)}
-                          </Card.Text>
-                        </Card.Body>
+                    <Dropdown className="d-flex justify-content-end">
+                      <Dropdown.Toggle id="dropdown-autoclose-true">
+                        Sort by
+                      </Dropdown.Toggle>
 
-                        <Card.Footer className="px-5 py-4 d-flex justify-content-between">
-                          <Button
-                            variant="secondary"
-                            onClick={() => onDetail(product.id)}
-                          >
-                            Detail
-                          </Button>
-                          <Button variant="primary" onClick={onAddToCart}>
-                            Add to cart
-                          </Button>
-                        </Card.Footer>
-                      </Card>
-                    </Col>
-                  ))}
-                </Row>
+                      <Dropdown.Menu>
+                        <Dropdown.Item
+                          active={selectedSortOption === 'quantity'}
+                          onClick={() => onClickSort('quantity')}
+                        >
+                          Quantity
+                        </Dropdown.Item>
+                        <Dropdown.Item
+                          active={selectedSortOption === 'price'}
+                          onClick={() => onClickSort('price')}
+                        >
+                          Price
+                        </Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  </div>
+
+                  <Row xs={1} sm={2} lg={3} xxl={4} className="my-5 g-4">
+                    {products.values.map((product) => (
+                      <Col key={product.id}>
+                        <Card>
+                          <Card.Img
+                            className="p-5"
+                            variant="top"
+                            src={product.image}
+                            height="300"
+                            width="300"
+                          />
+
+                          <Card.Body className="p-5">
+                            <Link href={`/products/${product.id}`}>
+                              <a className="fw-bolder text-decoration-none">
+                                {truncateText(product.title)}
+                              </a>
+                            </Link>
+                            <Card.Text className="mt-2 fw-lighter fst-italic">
+                              {truncateText(product.description)}
+                            </Card.Text>
+                          </Card.Body>
+
+                          {product.quantity === 0 ? (
+                            <Card.Footer className="px-5 py-4 text-white bg-danger">
+                              <strong>SOLD OUT</strong>
+                            </Card.Footer>
+                          ) : (
+                            <Card.Footer className="px-5 py-4">
+                              <strong>Price: ${product.price}</strong>
+                              <br />
+                              <strong>Quantity: {product.quantity}</strong>
+                            </Card.Footer>
+                          )}
+                        </Card>
+                      </Col>
+                    ))}
+                  </Row>
+                </section>
               )}
             </Container>
           </main>
