@@ -32,6 +32,12 @@ const productsSlice = createSlice({
         });
       });
     },
+    sortProducts: (state, action) => {
+      // action.payload === 'quantity' || 'price'
+      state.values = state.values.sort(
+        (a, b) => a[action.payload] - b[action.payload],
+      );
+    },
   },
 });
 
@@ -39,7 +45,7 @@ const productsSlice = createSlice({
 export const productsSelector = (state) => state.products;
 
 // products actions
-export const { addInitialProducts, updateProductsBasedOnCart } =
+export const { addInitialProducts, updateProductsBasedOnCart, sortProducts } =
   productsSlice.actions;
 
 // products reducer
