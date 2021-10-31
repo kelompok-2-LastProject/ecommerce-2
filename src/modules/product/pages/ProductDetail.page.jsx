@@ -109,6 +109,7 @@ export default function ProductDetailPage() {
   /* #endregion */
 
   /* #region MAIN */
+  const isSoldOut = useMemo(() => product?.quantity === 0, [product]);
   const [inputQuantity, setInputQuantity] = useState('1');
 
   const onChangeQuantity = (e) => {
@@ -223,39 +224,50 @@ export default function ProductDetailPage() {
                     </p>
 
                     {/* add to cart / update cart */}
-                    <Form className="mt-2 d-flex flex-column justify-content-start w-100">
-                      <Form.Group className="">
-                        <Form.Label>Input quantity: </Form.Label>
-                        <Form.Control
-                          type="number"
-                          min={1}
-                          max={product?.quantity}
-                          style={{ width: '15%' }}
-                          value={inputQuantity}
-                          onChange={onChangeQuantity}
-                        />
-                      </Form.Group>
+                    {isSoldOut ? (
+                      <div className="mt-2 d-flex justify-content-start align-items-center w-100">
+                        <p className="px-2 py-1 text-white rounded bg-danger">
+                          SOLD OUT
+                        </p>
+                      </div>
+                    ) : (
+                      <Form className="mt-2 d-flex flex-column justify-content-start w-100">
+                        <Form.Group className="">
+                          <Form.Label>Input quantity: </Form.Label>
+                          <Form.Control
+                            type="number"
+                            min={1}
+                            max={product?.quantity}
+                            style={{ width: '15%' }}
+                            value={inputQuantity}
+                            onChange={onChangeQuantity}
+                            disabled={isSoldOut}
+                          />
+                        </Form.Group>
 
-                      {isExistingProductFromCart ? (
-                        <Button
-                          className="mt-2"
-                          style={{ width: '15%' }}
-                          variant="warning"
-                          onClick={onUpdateCart}
-                        >
-                          Update cart
-                        </Button>
-                      ) : (
-                        <Button
-                          className="mt-2"
-                          style={{ width: '15%' }}
-                          variant="primary"
-                          onClick={onAddToCart}
-                        >
-                          Add to cart
-                        </Button>
-                      )}
-                    </Form>
+                        {isExistingProductFromCart ? (
+                          <Button
+                            className="mt-2"
+                            style={{ width: '15%' }}
+                            variant="warning"
+                            onClick={onUpdateCart}
+                            disabled={isSoldOut}
+                          >
+                            Update cart
+                          </Button>
+                        ) : (
+                          <Button
+                            className="mt-2"
+                            style={{ width: '15%' }}
+                            variant="primary"
+                            onClick={onAddToCart}
+                            disabled={isSoldOut}
+                          >
+                            Add to cart
+                          </Button>
+                        )}
+                      </Form>
+                    )}
                   </Col>
                 </Row>
               )}

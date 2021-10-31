@@ -108,9 +108,15 @@ export default function HomePage() {
                           </Card.Text>
                         </Card.Body>
 
-                        <Card.Footer className="px-5 py-4">
-                          <strong>Quantity: {product.quantity}</strong>
-                        </Card.Footer>
+                        {product.quantity === 0 ? (
+                          <Card.Footer className="px-5 py-4 text-white bg-danger">
+                            <strong>SOLD OUT</strong>
+                          </Card.Footer>
+                        ) : (
+                          <Card.Footer className="px-5 py-4">
+                            <strong>Quantity: {product.quantity}</strong>
+                          </Card.Footer>
+                        )}
                       </Card>
                     </Col>
                   ))}
