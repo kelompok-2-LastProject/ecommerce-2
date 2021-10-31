@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import { Navbar, Container, Nav, Button, Image } from 'react-bootstrap';
 // files
-import { ADMIN_TOKEN, theme } from '../config/constants';
+import { ADMIN_TOKEN, theme, USER_TOKEN } from '../config/constants';
 
 const styles = {
   navLinkFirst: {
@@ -24,7 +24,7 @@ const MyNavbar = () => {
     (() => {
       const token = localStorage.getItem('token');
 
-      if ((token && token.startsWith('eyJh')) || token === ADMIN_TOKEN) {
+      if (token === USER_TOKEN || token === ADMIN_TOKEN) {
         setIsLoggedIn(true);
       } else {
         setIsLoggedIn(false);

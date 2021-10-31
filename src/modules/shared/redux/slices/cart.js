@@ -31,6 +31,10 @@ const cartSlice = createSlice({
         state.count--;
       });
     },
+    clearCart: (state, _action) => {
+      state.count = 0;
+      state.values = [];
+    },
   },
 });
 
@@ -42,6 +46,7 @@ export const {
   addProductToCart,
   updateProductFromCart,
   deleteProductsFromCart,
+  clearCart,
 } = cartSlice.actions;
 
 // cart reducer

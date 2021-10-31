@@ -1,4 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
+// files
+import generateNumberFromInterval from '../../utils/generateNumberFromInterval';
 
 const productsSlice = createSlice({
   name: 'products',
@@ -10,13 +12,25 @@ const productsSlice = createSlice({
     addInitialProducts: (state, action) => {
       // action.payload === Product[]
       const newProducts = action.payload.map((product) => {
-        product.quantity = +(Math.random() * 100).toFixed();
+        product.quantity = generateNumberFromInterval(5, 100);
 
         return product;
       });
 
       state.count = newProducts.length;
       state.values = newProducts;
+    },
+    updateProductsBasedOnCart: (state, action) => {
+      // action.payload === Product[] (updated)
+      action.payload.forEach((updatedProduct) => {
+        state.values = state.values.map((product) => {
+          if (product.id === updatedProduct.id) {
+            product = updatedProduct;
+          }
+
+          return product;
+        });
+      });
     },
   },
 });
@@ -25,7 +39,8 @@ const productsSlice = createSlice({
 export const productsSelector = (state) => state.products;
 
 // products actions
-export const { addInitialProducts } = productsSlice.actions;
+export const { addInitialProducts, updateProductsBasedOnCart } =
+  productsSlice.actions;
 
 // products reducer
 export default productsSlice.reducer;

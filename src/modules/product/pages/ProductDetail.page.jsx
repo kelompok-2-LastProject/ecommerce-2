@@ -9,7 +9,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import MyNavbar from '../../shared/components/MyNavbar';
 import MyFooter from '../../shared/components/MyFooter';
 import Loader from '../../shared/components/Loader';
-import { ADMIN_TOKEN } from '../../shared/config/constants';
+import { ADMIN_TOKEN, USER_TOKEN } from '../../shared/config/constants';
 import { getProducts } from '../../shared/services/products';
 import {
   addInitialProducts,
@@ -18,7 +18,7 @@ import {
 import { addProductToCart } from '../../shared/redux/slices/cart';
 
 export default function ProductDetailPage() {
-  /* #region CHECK IF LOGGED IN AS ADMIN */
+  /* #region CHECK IF LOGGED IN AS GUEST OR USER */
   const { push } = useRouter();
   const [isReady, setIsReady] = useState(false);
 
@@ -27,7 +27,9 @@ export default function ProductDetailPage() {
       const token = localStorage.getItem('token');
 
       if (token === ADMIN_TOKEN) {
-        await push('/admin/products'); // push to update products
+        toast.warn('You are already logged in as admin');
+        await push('/admin/products');
+        return;
       }
 
       setIsReady(true);
@@ -94,8 +96,8 @@ export default function ProductDetailPage() {
   const onAddToCart = async () => {
     const token = localStorage.getItem('token');
 
-    // if not logged in
-    if (token && !token.startsWith('eyJh')) {
+    // if not logged in as USER
+    if (token !== USER_TOKEN) {
       toast.warn('Please login first');
       await push('/login');
       return;
@@ -185,7 +187,7 @@ export default function ProductDetailPage() {
                           type="number"
                           min={1}
                           max={product?.quantity}
-                          style={{ width: '25%' }}
+                          style={{ width: '15%' }}
                           value={inputQuantity}
                           onChange={onChangeQuantity}
                         />
@@ -193,7 +195,7 @@ export default function ProductDetailPage() {
 
                       <Button
                         className="mt-2"
-                        style={{ width: '25%' }}
+                        style={{ width: '15%' }}
                         variant="primary"
                         onClick={onAddToCart}
                       >
