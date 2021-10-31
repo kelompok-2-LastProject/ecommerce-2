@@ -15,7 +15,11 @@ import {
   addInitialProducts,
   productsSelector,
 } from '../../shared/redux/slices/products';
-import { addProductToCart } from '../../shared/redux/slices/cart';
+import {
+  addProductToCart,
+  cartSelector,
+  updateProductFromCart,
+} from '../../shared/redux/slices/cart';
 
 export default function ProductDetailPage() {
   /* #region CHECK IF LOGGED IN AS GUEST OR USER */
@@ -84,12 +88,30 @@ export default function ProductDetailPage() {
   }, []);
   /* #endregion */
 
+  /* #region CHECK IF PRODUCT ALREADY IN CART */
+  const cart = useSelector(cartSelector);
+  const [isExistingProductFromCart, setIsExistingProductFromCart] =
+    useState(false);
+
+  useEffect(() => {
+    (() => {
+      const existingProductFromCart = cart.values.find(
+        (cartItem) => cartItem.id === +productId,
+      );
+
+      if (existingProductFromCart) {
+        setInputQuantity(`${existingProductFromCart.quantity}`);
+        setIsExistingProductFromCart(true);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  /* #endregion */
+
   /* #region MAIN */
   const [inputQuantity, setInputQuantity] = useState('1');
 
   const onChangeQuantity = (e) => {
-    // TODO: check from product.quantity, if greater than it, then disable button
-
     setInputQuantity(e.target.value);
   };
 
@@ -121,6 +143,27 @@ export default function ProductDetailPage() {
     );
     toast.info('Product added to cart');
   };
+
+  const onUpdateCart = async () => {
+    // when manually inputted -> check if it's less than 1 || more than product.quantity
+    if (inputQuantity < 1) {
+      toast.warn('Input quantity cannot be less than 1');
+      return;
+    } else if (inputQuantity > product?.quantity) {
+      toast.warn(`Input quantity cannot be more than ${product?.quantity}`);
+      return;
+    }
+
+    // update REDUX cart
+    dispatch(
+      updateProductFromCart({
+        ...product,
+        quantity: +inputQuantity,
+      }),
+    );
+    toast.info('Cart updated');
+  };
+
   /* #endregion */
 
   return (
@@ -193,14 +236,25 @@ export default function ProductDetailPage() {
                         />
                       </Form.Group>
 
-                      <Button
-                        className="mt-2"
-                        style={{ width: '15%' }}
-                        variant="primary"
-                        onClick={onAddToCart}
-                      >
-                        Add to cart
-                      </Button>
+                      {isExistingProductFromCart ? (
+                        <Button
+                          className="mt-2"
+                          style={{ width: '15%' }}
+                          variant="warning"
+                          onClick={onUpdateCart}
+                        >
+                          Update cart
+                        </Button>
+                      ) : (
+                        <Button
+                          className="mt-2"
+                          style={{ width: '15%' }}
+                          variant="primary"
+                          onClick={onAddToCart}
+                        >
+                          Add to cart
+                        </Button>
+                      )}
                     </Form>
                   </Col>
                 </Row>
