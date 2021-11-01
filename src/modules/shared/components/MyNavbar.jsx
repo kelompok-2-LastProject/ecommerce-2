@@ -85,6 +85,9 @@ const MyNavbar = () => {
             <Link href="/support" passHref>
               <Nav.Link style={styles.navLink}>Support</Nav.Link>
             </Link>
+            <Link href="/admin/sales" passHref>
+              <Nav.Link style={styles.navLink}>Sales Recap</Nav.Link>
+            </Link>
           </Nav>
 
           {pathname !== '/login' && (
