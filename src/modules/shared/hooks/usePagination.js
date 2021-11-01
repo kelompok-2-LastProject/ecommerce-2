@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 
+export const DOTS = '...';
+
 const range = (start, end) => {
   let length = end - start + 1;
   /*
@@ -81,7 +83,5 @@ const usePagination = ({
 
   return paginationRange;
 };
-
-export const DOTS = '...';
 
 export default usePagination;
