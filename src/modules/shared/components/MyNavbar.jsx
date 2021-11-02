@@ -19,13 +19,18 @@ const styles = {
 const MyNavbar = () => {
   /* #region CHECK IF LOGGED IN */
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isUser, setIsUser] = useState(false);
   useEffect(() => {
     (() => {
       const token = localStorage.getItem('token');
 
-      if (token === USER_TOKEN || token === ADMIN_TOKEN) {
+      if (token === USER_TOKEN) {
         setIsLoggedIn(true);
+        setIsUser(true);
+      } else if (token === ADMIN_TOKEN) {
+        setIsLoggedIn(true);
+        setIsAdmin(true);
       } else {
         setIsLoggedIn(false);
       }
@@ -74,7 +79,7 @@ const MyNavbar = () => {
             <Link href="/" passHref>
               <Nav.Link style={styles.navLink}>Home</Nav.Link>
             </Link>
-            {isLoggedIn && (
+            {isUser && (
               <Link href="/cart" passHref>
                 <Nav.Link style={styles.navLink}>Cart</Nav.Link>
               </Link>
@@ -85,9 +90,11 @@ const MyNavbar = () => {
             <Link href="/support" passHref>
               <Nav.Link style={styles.navLink}>Support</Nav.Link>
             </Link>
-            <Link href="/admin/sales" passHref>
-              <Nav.Link style={styles.navLink}>Sales Recap</Nav.Link>
-            </Link>
+            {isAdmin && (
+              <Link href="/admin/sales" passHref>
+                <Nav.Link style={styles.navLink}>Sales Recap</Nav.Link>
+              </Link>
+            )}
           </Nav>
 
           {pathname !== '/login' && (
