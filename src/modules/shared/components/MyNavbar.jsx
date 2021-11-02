@@ -18,7 +18,6 @@ const styles = {
 
 const MyNavbar = () => {
   /* #region CHECK IF LOGGED IN */
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isUser, setIsUser] = useState(false);
   useEffect(() => {
@@ -26,13 +25,14 @@ const MyNavbar = () => {
       const token = localStorage.getItem('token');
 
       if (token === USER_TOKEN) {
-        setIsLoggedIn(true);
         setIsUser(true);
+        setIsAdmin(false);
       } else if (token === ADMIN_TOKEN) {
-        setIsLoggedIn(true);
         setIsAdmin(true);
+        setIsUser(false);
       } else {
-        setIsLoggedIn(false);
+        setIsUser(false);
+        setIsAdmin(false);
       }
     })();
   }, []);
@@ -47,7 +47,8 @@ const MyNavbar = () => {
 
   const onLogout = async () => {
     localStorage.removeItem('token');
-    setIsLoggedIn(false);
+    setIsUser(false);
+    setIsAdmin(false);
     await push('/');
   };
   /* #endregion */
@@ -99,7 +100,7 @@ const MyNavbar = () => {
 
           {pathname !== '/login' && (
             <div className="d-flex">
-              {isLoggedIn ? (
+              {isUser || isAdmin ? (
                 <Button variant="danger" onClick={onLogout}>
                   Logout
                 </Button>
