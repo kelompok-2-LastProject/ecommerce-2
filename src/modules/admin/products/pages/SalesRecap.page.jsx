@@ -38,71 +38,76 @@ export default function SalesRecapPage() {
   }, [recap.values]);
 
   return (
-    <main>
+    <div className="sales-recap">
       <NextSeo title="SalesRecap" />
-      {/* navbar */}
-      <MyNavbar />
       {isReady ? (
-        <Container fluid="lg my-5 pb-5">
-          <h1 className="my-5">Sales Recap</h1>
-          {recap.count < 1 ? (
-            <p>No products sold yet</p>
-          ) : (
-            <Table striped hover>
-              <thead
-                style={{
-                  backgroundColor: theme.colors.grey,
-                  fontWeight: 50,
-                  fontSize: 20,
-                }}
-              >
-                <tr>
-                  <th colSpan="2">Product</th>
-                  <th>Price</th>
-                  <th>Sold</th>
-                  <th>Income</th>
-                </tr>
-              </thead>
-              <tbody>
-                {recap.values.map((product) => (
-                  <tr key={product.id} className="align-middle">
-                    <td style={{ textAlign: 'center' }}>
-                      <Image
-                        alt={product.title}
-                        src={product.image}
-                        width={90}
-                        height={100}
-                      />
-                    </td>
-                    <td>
-                      <h5>{product.title}</h5>
-                      <p>${product.price}</p>
-                      <div className="mt-2 d-flex justify-content-start align-items-center w-100">
-                        <p className="px-2 py-1 text-white rounded bg-secondary">
-                          {product.category}
-                        </p>
-                      </div>
-                    </td>
-                    <td>$ {product.price}</td>
-                    <td>{product.quantity}</td>
-                    <td> $ {(product.price * product.quantity).toFixed()}</td>
-                  </tr>
-                ))}
-              </tbody>
-              <tfoot>
-                <tr style={{ fontWeight: 'bolder', fontSize: 20 }}>
-                  <th colSpan="4">Total: </th>
-                  <th>$ {totalPrice.toFixed()}</th>
-                </tr>
-              </tfoot>
-            </Table>
-          )}
-        </Container>
+        <>
+          <MyNavbar />
+          <main className="sales-recap-container min-vh-100">
+            <Container fluid="lg" s>
+              <h1 className="my-5">Sales Recap</h1>
+              {recap.count < 1 ? (
+                <p>No products sold yet</p>
+              ) : (
+                <Table striped hover>
+                  <thead
+                    style={{
+                      backgroundColor: theme.colors.grey,
+                      fontWeight: 50,
+                      fontSize: 20,
+                    }}
+                  >
+                    <tr>
+                      <th colSpan="2">Product</th>
+                      <th>Price</th>
+                      <th>Sold</th>
+                      <th>Income</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {recap.values.map((product) => (
+                      <tr key={product.id} className="align-middle">
+                        <td style={{ textAlign: 'center' }}>
+                          <Image
+                            alt={product.title}
+                            src={product.image}
+                            width={90}
+                            height={100}
+                          />
+                        </td>
+                        <td>
+                          <h5>{product.title}</h5>
+                          <p>${product.price}</p>
+                          <div className="mt-2 d-flex justify-content-start align-items-center w-100">
+                            <p className="px-2 py-1 text-white rounded bg-secondary">
+                              {product.category}
+                            </p>
+                          </div>
+                        </td>
+                        <td>$ {product.price}</td>
+                        <td>{product.quantity}</td>
+                        <td>
+                          {' '}
+                          $ {(product.price * product.quantity).toFixed()}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  <tfoot>
+                    <tr style={{ fontWeight: 'bolder', fontSize: 20 }}>
+                      <th colSpan="4">Total: </th>
+                      <th>$ {totalPrice.toFixed()}</th>
+                    </tr>
+                  </tfoot>
+                </Table>
+              )}
+            </Container>
+          </main>
+          <MyFooter />
+        </>
       ) : (
         <Loader />
       )}
-
-      <MyFooter />
-    </main>
+    </div>
   );
 }

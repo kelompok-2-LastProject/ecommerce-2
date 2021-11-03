@@ -21,33 +21,30 @@ const MyFooter = () => {
     <footer className="w-auto h-auto" style={styles.myFooter}>
       <Container fluid="lg" className="">
         <Row
-          xs={1}
-          sm={2}
-          lg={4}
-          xxl={5}
-          className="pb-2 g-4 justify-content-between align-items-center"
+          lg={3}
+          className="p-2 g-4 justify-content-between align-items-center"
         >
-          {['Home', 'FAQ', 1, 'Support', 'Login'].map((data, idx) =>
-            data === 1 ? (
-              <Col key={data} className="text-center">
-                <Link href="/" passHref>
-                  <Image
-                    className="rounded-circle"
-                    alt="logo"
-                    src="/logo-dark.png"
-                    width="40"
-                    height="40"
-                  />
-                </Link>
-              </Col>
-            ) : (
-              <Col key={data} className={idx < 2 ? 'text-start' : 'text-end'}>
-                <Link href="/">
-                  <a className="text-white text-decoration-none">{data}</a>
-                </Link>
-              </Col>
-            ),
-          )}
+          <Col className="text-end">
+            <Link href="/faq">
+              <a className="text-white text-decoration-none">FAQ</a>
+            </Link>
+          </Col>
+          <Col className="text-center">
+            <Link href="/" passHref>
+              <Image
+                className="rounded-circle"
+                alt="logo"
+                src="/logo-dark.png"
+                width="40"
+                height="40"
+              />
+            </Link>
+          </Col>
+          <Col className="text-start">
+            <Link href="/support">
+              <a className="text-white text-decoration-none">Support</a>
+            </Link>
+          </Col>
         </Row>
 
         <hr className="pt-1 text-white" />
