@@ -28,8 +28,9 @@ const cartSlice = createSlice({
         state.values = state.values.filter(
           (productCart) => productCart.id !== productId,
         );
-        state.count--;
       });
+
+      state.count = state.values.length;
     },
     clearCart: (state, _action) => {
       state.count = 0;

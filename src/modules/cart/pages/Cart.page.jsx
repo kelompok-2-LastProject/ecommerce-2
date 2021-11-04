@@ -12,6 +12,7 @@ import {
   cartSelector,
   updateProductFromCart,
   clearCart,
+  deleteProductsFromCart,
 } from '../../shared/redux/slices/cart';
 import {
   productsSelector,
@@ -43,6 +44,17 @@ const CartPage = () => {
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  /* #endregion */
+
+  /* #region BULK DELETE */
+  const [productCheck, setProductCheck] = useState([]); // [{ productId: 1, isChecked: true }]
+  const atLeastOneProductChecked = productCheck.find((prod) => prod?.isChecked);
+
+  const onBulkDelete = () => {
+    const payload = productCheck.map((el) => el?.isChecked && el?.productId);
+    dispatch(deleteProductsFromCart(payload));
+    setProductCheck([]);
+  };
   /* #endregion */
 
   /* #region MAIN */
@@ -87,7 +99,7 @@ const CartPage = () => {
     );
   };
 
-  const onCheckout = () => {
+  const onCheckout = async () => {
     let filteredProductsBasedOnCart = [];
     cart.values.forEach((cartItem) => {
       // get productItem from products === productItem from Cart
@@ -117,6 +129,7 @@ const CartPage = () => {
 
     // on success all
     toast.success('Thank you!');
+    await push('/');
   };
   /* #endregion */
 
@@ -134,7 +147,7 @@ const CartPage = () => {
               <h1 className="my-5">Your Cart</h1>
 
               {cart.count < 1 ? (
-                <h6 className="mb-5">Empty cart</h6>
+                <h6 className="mb-5">Anda belum memilih item</h6>
               ) : (
                 <>
                   <Table striped hover>
@@ -146,6 +159,15 @@ const CartPage = () => {
                       }}
                     >
                       <tr>
+                        <th>
+                          {/* <Form.Check
+                            type="checkbox"
+                            aria-label="check-all"
+                            checked={allCheck}
+                            onChange={(e) => setAllCheck(e.target.checked)}
+                          /> */}
+                          #
+                        </th>
                         <th colSpan="2">Product</th>
                         <th>Price</th>
                         <th>Quantity</th>
@@ -155,6 +177,27 @@ const CartPage = () => {
                     <tbody>
                       {cart.values.map((product) => (
                         <tr key={product.title} className="align-middle">
+                          <td>
+                            <Form.Check
+                              className="pe-auto"
+                              type="checkbox"
+                              aria-label={`check-${product.id}`}
+                              checked={
+                                productCheck[product.id - 1]?.isChecked || false
+                              }
+                              onChange={(e) =>
+                                setProductCheck((prev) => {
+                                  const nextValue = [...prev];
+                                  nextValue[product.id - 1] = {
+                                    productId: product.id,
+                                    isChecked: e.target.checked,
+                                  };
+
+                                  return nextValue;
+                                })
+                              }
+                            />
+                          </td>
                           <td>
                             <Image
                               alt={product.title}
@@ -215,9 +258,28 @@ const CartPage = () => {
                     </tbody>
                     <tfoot>
                       <tr style={{ fontWeight: 'bolder', fontSize: 20 }}>
-                        <th colSpan="4">Total Price</th>
+                        <th colSpan="5">Total Price</th>
                         <th>$ {totalPrice.toFixed()}</th>
                       </tr>
+                      {atLeastOneProductChecked && (
+                        <tr>
+                          <th colSpan="5" className="fst-italic text-secondary">
+                            Delete selected product from cart?
+                          </th>
+                          <th>
+                            <Button
+                              variant="danger"
+                              size="sm"
+                              style={{
+                                padding: '2px 8px',
+                              }}
+                              onClick={onBulkDelete}
+                            >
+                              YES
+                            </Button>
+                          </th>
+                        </tr>
+                      )}
                     </tfoot>
                   </Table>
 
