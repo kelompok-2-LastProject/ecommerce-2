@@ -18,16 +18,21 @@ const styles = {
 
 const MyNavbar = () => {
   /* #region CHECK IF LOGGED IN */
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isUser, setIsUser] = useState(false);
   useEffect(() => {
     (() => {
       const token = localStorage.getItem('token');
 
-      if (token === USER_TOKEN || token === ADMIN_TOKEN) {
-        setIsLoggedIn(true);
+      if (token === USER_TOKEN) {
+        setIsUser(true);
+        setIsAdmin(false);
+      } else if (token === ADMIN_TOKEN) {
+        setIsAdmin(true);
+        setIsUser(false);
       } else {
-        setIsLoggedIn(false);
+        setIsUser(false);
+        setIsAdmin(false);
       }
     })();
   }, []);
@@ -42,13 +47,18 @@ const MyNavbar = () => {
 
   const onLogout = async () => {
     localStorage.removeItem('token');
-    setIsLoggedIn(false);
+    setIsUser(false);
+    setIsAdmin(false);
     await push('/');
   };
   /* #endregion */
 
   return (
-    <Navbar expand="md" style={{ backgroundColor: theme.colors.primary }}>
+    <Navbar
+      expand="md"
+      style={{ backgroundColor: theme.colors.primary }}
+      sticky="top"
+    >
       <Container fluid="lg">
         <Link href="/cart" passHref>
           <Image
@@ -71,25 +81,31 @@ const MyNavbar = () => {
             style={{ maxHeight: '100px' }}
             navbarScroll
           >
-            <Link href="/" passHref>
-              <Nav.Link style={styles.navLink}>Home</Nav.Link>
-            </Link>
-            {isLoggedIn && (
+            {!isAdmin && (
+              <Link href="/" passHref>
+                <Nav.Link style={styles.navLink}>Home</Nav.Link>
+              </Link>
+            )}
+            {isUser && (
               <Link href="/cart" passHref>
                 <Nav.Link style={styles.navLink}>Cart</Nav.Link>
               </Link>
             )}
-            <Link href="/faq" passHref>
-              <Nav.Link style={styles.navLink}>FAQ</Nav.Link>
-            </Link>
-            <Link href="/support" passHref>
-              <Nav.Link style={styles.navLink}>Support</Nav.Link>
-            </Link>
+            {isAdmin && (
+              <Link href="/admin/products" passHref>
+                <Nav.Link style={styles.navLink}>Update Product</Nav.Link>
+              </Link>
+            )}
+            {isAdmin && (
+              <Link href="/admin/sales" passHref>
+                <Nav.Link style={styles.navLink}>Sales Recap</Nav.Link>
+              </Link>
+            )}
           </Nav>
 
           {pathname !== '/login' && (
             <div className="d-flex">
-              {isLoggedIn ? (
+              {isUser || isAdmin ? (
                 <Button variant="danger" onClick={onLogout}>
                   Logout
                 </Button>

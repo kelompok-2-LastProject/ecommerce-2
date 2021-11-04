@@ -38,6 +38,17 @@ const productsSlice = createSlice({
         (a, b) => a[action.payload] - b[action.payload],
       );
     },
+
+    updateProduct: (state, action) => {
+      // action.payload === Product
+      const updatedProducts = state.values.map((val) => {
+        if (val.id === action.payload.id) {
+          val.quantity = action.payload.quantity;
+        }
+        return val;
+      });
+      state.values = updatedProducts;
+    },
   },
 });
 
@@ -45,8 +56,12 @@ const productsSlice = createSlice({
 export const productsSelector = (state) => state.products;
 
 // products actions
-export const { addInitialProducts, updateProductsBasedOnCart, sortProducts } =
-  productsSlice.actions;
+export const {
+  addInitialProducts,
+  updateProductsBasedOnCart,
+  sortProducts,
+  updateProduct,
+} = productsSlice.actions;
 
 // products reducer
 export default productsSlice.reducer;
