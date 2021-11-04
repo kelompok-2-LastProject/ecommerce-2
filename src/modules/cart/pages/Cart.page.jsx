@@ -99,7 +99,7 @@ const CartPage = () => {
     );
   };
 
-  const onCheckout = () => {
+  const onCheckout = async () => {
     let filteredProductsBasedOnCart = [];
     cart.values.forEach((cartItem) => {
       // get productItem from products === productItem from Cart
@@ -129,6 +129,7 @@ const CartPage = () => {
 
     // on success all
     toast.success('Thank you!');
+    await push('/');
   };
   /* #endregion */
 
@@ -146,7 +147,7 @@ const CartPage = () => {
               <h1 className="my-5">Your Cart</h1>
 
               {cart.count < 1 ? (
-                <h6 className="mb-5">Empty cart</h6>
+                <h6 className="mb-5">Anda belum memilih item</h6>
               ) : (
                 <>
                   <Table striped hover>
