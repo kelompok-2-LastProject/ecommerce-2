@@ -38,7 +38,6 @@ const productsSlice = createSlice({
         (a, b) => a[action.payload] - b[action.payload],
       );
     },
-
     updateProduct: (state, action) => {
       // action.payload === Product
       const updatedProducts = state.values.map((val) => {
