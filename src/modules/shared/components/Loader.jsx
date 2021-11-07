@@ -2,8 +2,8 @@ import { Row, Spinner } from 'react-bootstrap';
 
 const Loader = () => {
   return (
-    <Row className="mx-auto min-vh-100">
-      <Spinner className="mt-5" animation="border" variant="primary" />
+    <Row className="m-auto min-vh-100">
+      <Spinner className="m-auto" animation="border" variant="primary" />
     </Row>
   );
 };
