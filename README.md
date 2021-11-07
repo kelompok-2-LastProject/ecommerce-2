@@ -14,28 +14,28 @@
 
 ---
 
+## Deployment 🌏
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/b83a8ce9-8cd0-4b3c-9fa9-c54483733b2d/deploy-status)](https://app.netlify.com/sites/female-ecommerce/deploys)
+
+Deployed to [Netlify](https://female-ecommerce.netlify.app/)
+
 ## What is fe:male ❓
 
-fe:male adalah final project dari Team 2 yang beranggotakan Tri Rizeki Rifandani dan Vera. Project ini merupakan project dari program kampus merdeka internship 2021 di Hacktiv8. Project ini bertemakan E-Commerce yang mengambil data dari external API di [FakeStoreAPI](www.fakestoreapi.com).
+fe:male adalah final project dari Team 2 yang beranggotakan Tri Rizeki Rifandani dan Vera. Project ini merupakan project dari program kampus merdeka internship 2021 di Hacktiv8. Project ini bertemakan E-Commerce yang mengambil data dari external API di [FakeStoreAPI](www.fakestoreapi.com). Durasi pengerjaan project dilaksanakan dalam batas waktu 3 minggu.
 
-## Features 🎲
+## Tech Stack 🎲
 
-Trishop dilengkapi dengan fitur:
+1. Next.js 12 + `eslint` + `husky` + `lint-staged`
+2. SEO dengan `next-seo`
+3. External API call ke [FakeStoreAPI](www.fakestoreapi.com) dengan `axios`
+4. UI Library menggunakan `react-bootstrap`
+5. State management menggunakan `@reduxjs/toolkit`
+6. Peyimpanan data ke Local Storage
 
-1. Next.js + Eslint + Husky ⚡
-2. Next.js dengan SEO ✅
-3. External API call ke [FakeStoreAPI](www.fakestoreapi.com) dengan Axios 🌸
-4. Peyimpanan data ke Local Storage 🍃
-5. UI Library menggunakan react-bootstrap 🎉
-6. State management menggunakan redux-toolkit 🔯
+## Design 📝
 
-## Screenshots 📷
-
-Coming soon
-
-<!-- - Halaman admin dashboard add product
-
-  <img src="public/readme/admin2.jpg" alt="admin dashboard add product page" style="height: 300px;" /> -->
+Selain itu, kami juga menyempatkan diri untuk mendesign mockup dari aplikasi nya di [Figma](https://www.figma.com/file/RNkxypPR3HRmJjpzr4ZV1B/Wireframing-in-Figma?node-id=0%3A1)
 
 ## Usage 🏀
 

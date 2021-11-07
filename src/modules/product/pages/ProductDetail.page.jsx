@@ -104,8 +104,7 @@ export default function ProductDetailPage() {
         setIsExistingProductFromCart(true);
       }
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [cart.values, productId]);
   /* #endregion */
 
   /* #region MAIN */
@@ -116,7 +115,7 @@ export default function ProductDetailPage() {
     setInputQuantity(e.target.value);
   };
 
-  const onAddToCart = async () => {
+  const onAddOrUpdateCart = async () => {
     const token = localStorage.getItem('token');
 
     // if not logged in as USER
@@ -135,36 +134,28 @@ export default function ProductDetailPage() {
       return;
     }
 
-    // add to REDUX cart
-    dispatch(
-      addProductToCart({
-        ...product,
-        quantity: +inputQuantity,
-      }),
-    );
-    toast.info('Product added to cart');
-  };
+    // check if already in cart redux
+    const isExists = cart.values.find((cartItem) => cartItem.id === +productId);
 
-  const onUpdateCart = async () => {
-    // when manually inputted -> check if it's less than 1 || more than product.quantity
-    if (inputQuantity < 1) {
-      toast.warn('Input quantity cannot be less than 1');
-      return;
-    } else if (inputQuantity > product?.quantity) {
-      toast.warn(`Input quantity cannot be more than ${product?.quantity}`);
-      return;
+    // add to REDUX cart || update to redux cart
+    if (isExists) {
+      dispatch(
+        updateProductFromCart({
+          ...product,
+          quantity: +inputQuantity,
+        }),
+      );
+      toast.info('Cart updated');
+    } else {
+      dispatch(
+        addProductToCart({
+          ...product,
+          quantity: +inputQuantity,
+        }),
+      );
+      toast.info('Product added to cart');
     }
-
-    // update REDUX cart
-    dispatch(
-      updateProductFromCart({
-        ...product,
-        quantity: +inputQuantity,
-      }),
-    );
-    toast.info('Cart updated');
   };
-
   /* #endregion */
 
   return (
@@ -245,27 +236,19 @@ export default function ProductDetailPage() {
                           />
                         </Form.Group>
 
-                        {isExistingProductFromCart ? (
-                          <Button
-                            className="mt-2"
-                            style={{ width: '15%' }}
-                            variant="warning"
-                            onClick={onUpdateCart}
-                            disabled={isSoldOut}
-                          >
-                            Update cart
-                          </Button>
-                        ) : (
-                          <Button
-                            className="mt-2"
-                            style={{ width: '15%' }}
-                            variant="primary"
-                            onClick={onAddToCart}
-                            disabled={isSoldOut}
-                          >
-                            Add to cart
-                          </Button>
-                        )}
+                        <Button
+                          className="mt-2"
+                          style={{ width: '15%' }}
+                          variant={
+                            isExistingProductFromCart ? 'warning' : 'primary'
+                          }
+                          onClick={onAddOrUpdateCart}
+                          disabled={isSoldOut}
+                        >
+                          {isExistingProductFromCart
+                            ? 'Update cart'
+                            : 'Add to cart'}
+                        </Button>
                       </Form>
                     )}
                   </Col>

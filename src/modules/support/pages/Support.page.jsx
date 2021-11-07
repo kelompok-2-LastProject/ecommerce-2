@@ -8,11 +8,16 @@ import {
   Button,
 } from 'react-bootstrap';
 import { FaHome, FaPhone, FaMailBulk } from 'react-icons/fa';
+import { toast } from 'react-toastify';
 // files
 import MyNavbar from '../../shared/components/MyNavbar';
 import MyFooter from '../../shared/components/MyFooter';
 
 const SupportPage = () => {
+  const onSubmitForm = () => {
+    toast.success('Thanks for your input!');
+  };
+
   return (
     <div className="support">
       <NextSeo title="Support" />
@@ -35,6 +40,7 @@ const SupportPage = () => {
                   className="bg-light"
                   type="text"
                   placeholder="Input nama"
+                  minLength={3}
                 />
               </FloatingLabel>
             </Col>
@@ -55,12 +61,13 @@ const SupportPage = () => {
               className="bg-light"
               as="textarea"
               placeholder="Input description"
+              minLength={10}
               style={{ height: '200px' }}
             />
           </FloatingLabel>
 
           <section className="my-4 d-grid">
-            <Button variant="primary" size="lg">
+            <Button variant="primary" size="lg" onClick={onSubmitForm}>
               Submit
             </Button>
           </section>
