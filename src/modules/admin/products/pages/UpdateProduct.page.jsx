@@ -18,21 +18,22 @@ import {
 } from '../../../shared/redux/slices/products';
 
 export default function UpdateProductPage() {
-  const router = useRouter();
+  /* #region CHECK IF ADMIN */
+  const { push } = useRouter();
   const [isReady, setIsReady] = useState(false);
-
   useEffect(() => {
     (async () => {
       const token = localStorage.getItem('token');
 
       if (token !== ADMIN_TOKEN) {
-        await router.push('/login'); // push to login page
+        await push('/login'); // push to login page
         toast.error('You are not authenticated!');
         return;
       }
       setIsReady(true);
     })();
-  }, []);
+  }, [push]);
+  /* #endregion */
 
   /* #region GET PRODUCTS DATA */
   const products = useSelector(productsSelector);
@@ -64,27 +65,45 @@ export default function UpdateProductPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   /* #endregion */
-  const [inputQuantity, setInputQuantity] = useState(products.values);
-  //console.log(products);
-  function getQuantity(productId) {
-    let product = inputQuantity.find((element) => element.id === productId);
-    console.log(inputQuantity);
-    // return product.quantity;
-  }
 
-  function updateQuantity(newQuantity, productId) {
-    let newArr = [...inputQuantity].map((elemen) => {
-      if (elemen.id === productId) {
-        elemen.quantity = +newQuantity;
-      }
-      return elemen;
+  /* #region MAIN */
+  const [tempProducts, setTempProducts] = useState([]);
+
+  useEffect(() => {
+    if (products.count > 0) setTempProducts(products.values);
+  }, [products.count, products.values]);
+
+  function onChangeInput(productId, newQuantity) {
+    setTempProducts((prev) => {
+      const newState = [...prev].map((prod) => {
+        if (prod.id === productId) {
+          const newObject = {
+            ...prod,
+            quantity: +newQuantity,
+          };
+
+          return newObject;
+        } else {
+          return prod;
+        }
+      });
+
+      return newState;
     });
-    // console.log(newArr);
   }
 
-  function onUpdate() {
-    //console.log(inputQuantity);
+  function onClickUpdate(productId) {
+    const updatedProduct = tempProducts.find((elem) => elem.id === productId);
+
+    if (updatedProduct.quantity < 0) {
+      toast.error('Can not go below 0');
+      return;
+    }
+
+    dispatch(updateProduct(updatedProduct));
+    toast.success('Product updated');
   }
+  /* #endregion */
 
   return (
     <div className="update-product">
@@ -96,7 +115,7 @@ export default function UpdateProductPage() {
           <main className="update-product-container">
             <Container fluid="sm md lg my-5 pb-5">
               <h1 className="my-5">Update Product</h1>
-              {products.count < 1 ? (
+              {tempProducts.length < 1 ? (
                 <Loader />
               ) : (
                 <Table striped hover>
@@ -114,7 +133,7 @@ export default function UpdateProductPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {products.values.map((product) => (
+                    {tempProducts.map((product) => (
                       <tr key={product.id} className="align-middle">
                         <td style={{ textAlign: 'center' }}>
                           <Image
@@ -140,9 +159,10 @@ export default function UpdateProductPage() {
                           <input
                             type="number"
                             className="form-control"
-                            value={getQuantity(product.id)}
+                            min={0}
+                            value={product.quantity}
                             onChange={(e) =>
-                              updateQuantity(e.target.value, product.id)
+                              onChangeInput(product.id, e.target.value)
                             }
                           />
                         </td>
@@ -151,7 +171,7 @@ export default function UpdateProductPage() {
                             className="my-5"
                             variant="primary"
                             type="button"
-                            onClick={onUpdate}
+                            onClick={() => onClickUpdate(product.id)}
                           >
                             Update
                           </Button>
