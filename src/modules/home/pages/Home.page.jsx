@@ -27,7 +27,7 @@ import {
   productsSelector,
 } from '../../shared/redux/slices/products';
 import useDebounce from '../../shared/hooks/useDebounce';
-
+import Carousel from 'react-bootstrap/Carousel';
 export default function HomePage() {
   /* #region CHECK IF LOGGED IN AS ADMIN */
   const { push } = useRouter();
@@ -140,8 +140,32 @@ export default function HomePage() {
         <>
           {/* navbar */}
           <MyNavbar />
-
           <main className="pb-5 home-container">
+            <div className="mb-5" style={{ width: '100%' }}>
+              <Carousel>
+                <Carousel.Item interval={900}>
+                  <img
+                    className="d-block w-100"
+                    src="/banner1.jpg"
+                    alt="Image One"
+                  />
+                </Carousel.Item>
+                <Carousel.Item interval={900}>
+                  <img
+                    className="d-block w-100"
+                    src="banner2.jpg"
+                    alt="Image Two"
+                  />
+                </Carousel.Item>
+                <Carousel.Item interval={900}>
+                  <img
+                    className="d-block w-100"
+                    src="banner3.jpg"
+                    alt="Image Three"
+                  />
+                </Carousel.Item>
+              </Carousel>
+            </div>
             <Container fluid="lg">
               <h1 className="my-5">Products List</h1>
 
@@ -150,7 +174,6 @@ export default function HomePage() {
                 mulai dari pakaian pria, pakaian wanita, perhiasan, dan
                 elektronik.
               </h6>
-
               {products.count === 0 ? (
                 <Loader />
               ) : (
@@ -213,14 +236,16 @@ export default function HomePage() {
                             />
 
                             <Card.Body className="p-5">
-                              <Link href={`/products/${product.id}`}>
-                                <a className="fw-bolder text-decoration-none">
-                                  {truncateText(product.title)}
-                                </a>
-                              </Link>
-                              <Card.Text className="mt-2 fw-lighter fst-italic">
-                                {truncateText(product.description)}
-                              </Card.Text>
+                              <Row>
+                                <Link href={`/products/${product.id}`}>
+                                  <a className="fw-bolder text-decoration-none text-truncate">
+                                    {truncateText(product.title)}
+                                  </a>
+                                </Link>
+                                <Card.Text className="mt-2 fw-lighter fst-italic text-truncate">
+                                  {truncateText(product.description)}
+                                </Card.Text>
+                              </Row>
                             </Card.Body>
 
                             {product.quantity === 0 ? (

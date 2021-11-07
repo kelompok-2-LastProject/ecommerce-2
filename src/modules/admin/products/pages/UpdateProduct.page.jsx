@@ -18,14 +18,32 @@ import {
 } from '../../../shared/redux/slices/products';
 
 export default function UpdateProductPage() {
+  const router = useRouter();
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const token = localStorage.getItem('token');
+
+      if (token !== ADMIN_TOKEN) {
+        await router.push('/login'); // push to login page
+        toast.error('You are not authenticated!');
+        return;
+      }
+      setIsReady(true);
+    })();
+  }, []);
+
   /* #region GET PRODUCTS DATA */
   const products = useSelector(productsSelector);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
     (async () => {
       // check if products is already exists
       if (products.count > 0) {
+        //setInputQuantity(products.values);
         return;
       }
 
@@ -40,33 +58,37 @@ export default function UpdateProductPage() {
 
       // add products to redux
       dispatch(addInitialProducts(data));
+
+      //setInputQuantity(products.values);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   /* #endregion */
-  const router = useRouter();
-  const [isReady, setIsReady] = useState(false);
-  const [inputQuantity, setInputQuantity] = useState('1');
-  useEffect(() => {
-    (async () => {
-      const token = localStorage.getItem('token');
+  const [inputQuantity, setInputQuantity] = useState(products.values);
+  //console.log(products);
+  function getQuantity(productId) {
+    let product = inputQuantity.find((element) => element.id === productId);
+    console.log(inputQuantity);
+    // return product.quantity;
+  }
 
-      if (token !== ADMIN_TOKEN) {
-        await router.push('/login'); // push to login page
-        toast.error('You are not authenticated!');
-        return;
+  function updateQuantity(newQuantity, productId) {
+    let newArr = [...inputQuantity].map((elemen) => {
+      if (elemen.id === productId) {
+        elemen.quantity = +newQuantity;
       }
-      setIsReady(true);
-    })();
-  }, []);
+      return elemen;
+    });
+    // console.log(newArr);
+  }
 
   function onUpdate() {
-    console.log(inputQuantity);
+    //console.log(inputQuantity);
   }
 
   return (
     <div className="update-product">
-      <NextSeo title="UpdateProduct"/>
+      <NextSeo title="UpdateProduct" />
       {isReady ? (
         <>
           <MyNavbar />
@@ -118,8 +140,10 @@ export default function UpdateProductPage() {
                           <input
                             type="number"
                             className="form-control"
-                            value={inputQuantity}
-                            onChange={(e) => setInputQuantity(e.target.value)}
+                            value={getQuantity(product.id)}
+                            onChange={(e) =>
+                              updateQuantity(e.target.value, product.id)
+                            }
                           />
                         </td>
                         <td>
