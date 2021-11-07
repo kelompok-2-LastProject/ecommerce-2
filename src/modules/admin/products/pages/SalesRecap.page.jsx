@@ -13,8 +13,8 @@ import Loader from '../../../shared/components/Loader';
 import { checkoutSelector } from '../../../shared/redux/slices/checkout';
 
 export default function SalesRecapPage() {
-  const recap = useSelector(checkoutSelector);
-  const router = useRouter();
+  /* #region CHECK IF ADMIN */
+  const { push } = useRouter();
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
@@ -22,20 +22,24 @@ export default function SalesRecapPage() {
       const token = localStorage.getItem('token');
 
       if (token !== ADMIN_TOKEN) {
-        await router.push('/login'); // push to login page
+        await push('/login'); // push to login page
         toast.error('You are not authenticated!');
         return;
       }
       setIsReady(true);
     })();
-  }, []);
+  }, [push]);
+  /* #endregion */
 
+  /* #region MAIN */
+  const recap = useSelector(checkoutSelector);
   const totalPrice = useMemo(() => {
     return recap.values.reduce(
       (accumulator, curr) => accumulator + curr.price * curr.quantity,
       0,
     );
   }, [recap.values]);
+  /* #endregion */
 
   return (
     <div className="sales-recap">

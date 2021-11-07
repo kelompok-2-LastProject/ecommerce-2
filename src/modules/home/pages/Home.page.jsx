@@ -9,10 +9,13 @@ import {
   Form,
   InputGroup,
   Dropdown,
+  ListGroup,
+  ListGroupItem,
 } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import { useSelector, useDispatch } from 'react-redux';
+import Carousel from 'react-bootstrap/Carousel';
 // files
 import MyNavbar from '../../shared/components/MyNavbar';
 import MyFooter from '../../shared/components/MyFooter';
@@ -123,7 +126,7 @@ export default function HomePage() {
 
   /* #region PAGINATION PRODUCTS */
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize] = useState(4);
+  const [pageSize] = useState(8);
 
   const paginatedProducts = useMemo(() => {
     const firstPageIndex = (currentPage - 1) * pageSize;
@@ -140,8 +143,32 @@ export default function HomePage() {
         <>
           {/* navbar */}
           <MyNavbar />
-
           <main className="pb-5 home-container">
+            <div className="mb-5" style={{ width: '100%' }}>
+              <Carousel>
+                <Carousel.Item interval={1500}>
+                  <img
+                    className="d-block w-100"
+                    src="/banner1.jpg"
+                    alt="Image One"
+                  />
+                </Carousel.Item>
+                <Carousel.Item interval={1500}>
+                  <img
+                    className="d-block w-100"
+                    src="banner2.jpg"
+                    alt="Image Two"
+                  />
+                </Carousel.Item>
+                <Carousel.Item interval={1500}>
+                  <img
+                    className="d-block w-100"
+                    src="banner3.jpg"
+                    alt="Image Three"
+                  />
+                </Carousel.Item>
+              </Carousel>
+            </div>
             <Container fluid="lg">
               <h1 className="my-5">Products List</h1>
 
@@ -150,14 +177,13 @@ export default function HomePage() {
                 mulai dari pakaian pria, pakaian wanita, perhiasan, dan
                 elektronik.
               </h6>
-
               {products.count === 0 ? (
                 <Loader />
               ) : (
                 <section>
                   {/* search and sort */}
-                  <div className="mt-5 d-flex justify-content-between align-items-center">
-                    <Form className="d-flex flex-column justify-content-start w-25">
+                  <div className="mt-5 d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center align-items-start">
+                    <Form className="d-flex flex-column justify-content-start w-50">
                       <InputGroup className="">
                         <InputGroup.Text id="search-term">
                           Search
@@ -167,7 +193,6 @@ export default function HomePage() {
                           placeholder="Product title or description..."
                           aria-label="Search product"
                           aria-describedby="search-term"
-                          style={{ width: '50%%' }}
                           onChange={(e) => setSearchTerm(e.target.value)}
                         />
                       </InputGroup>
@@ -212,27 +237,35 @@ export default function HomePage() {
                               width="300"
                             />
 
-                            <Card.Body className="p-5">
-                              <Link href={`/products/${product.id}`}>
-                                <a className="fw-bolder text-decoration-none">
-                                  {truncateText(product.title)}
-                                </a>
-                              </Link>
-                              <Card.Text className="mt-2 fw-lighter fst-italic">
-                                {truncateText(product.description)}
-                              </Card.Text>
+                            <Card.Body className="px-5">
+                              <Row>
+                                <Link href={`/products/${product.id}`}>
+                                  <a className="fw-bolder text-decoration-none text-truncate">
+                                    {product.title}
+                                  </a>
+                                </Link>
+                              </Row>
                             </Card.Body>
 
                             {product.quantity === 0 ? (
-                              <Card.Footer className="px-5 py-4 text-white bg-danger">
+                              <Card.Footer className="px-5 py-4 text-white bg-danger fw-bolder">
                                 <strong>SOLD OUT</strong>
                               </Card.Footer>
                             ) : (
-                              <Card.Footer className="px-5 py-4">
-                                <strong>Price: ${product.price}</strong>
-                                <br />
-                                <strong>Quantity: {product.quantity}</strong>
-                              </Card.Footer>
+                              <ListGroup variant="flush">
+                                <ListGroupItem className="px-5">
+                                  Price:{' '}
+                                  <p className="text-success d-inline fw-bolder">
+                                    ${product.price}
+                                  </p>
+                                </ListGroupItem>
+                                <ListGroupItem className="px-5">
+                                  Quantity:{' '}
+                                  <p className="text-success d-inline fw-bolder">
+                                    {product.quantity}
+                                  </p>
+                                </ListGroupItem>
+                              </ListGroup>
                             )}
                           </Card>
                         </Col>

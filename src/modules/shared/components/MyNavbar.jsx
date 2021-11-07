@@ -102,7 +102,6 @@ const MyNavbar = () => {
               </Link>
             )}
           </Nav>
-
           {pathname !== '/login' && (
             <div className="d-flex">
               {isUser || isAdmin ? (
