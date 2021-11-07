@@ -15,6 +15,7 @@ import {
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import { useSelector, useDispatch } from 'react-redux';
+import Carousel from 'react-bootstrap/Carousel';
 // files
 import MyNavbar from '../../shared/components/MyNavbar';
 import MyFooter from '../../shared/components/MyFooter';
@@ -142,8 +143,32 @@ export default function HomePage() {
         <>
           {/* navbar */}
           <MyNavbar />
-
           <main className="pb-5 home-container">
+            <div className="mb-5" style={{ width: '100%' }}>
+              <Carousel>
+                <Carousel.Item interval={1500}>
+                  <img
+                    className="d-block w-100"
+                    src="/banner1.jpg"
+                    alt="Image One"
+                  />
+                </Carousel.Item>
+                <Carousel.Item interval={1500}>
+                  <img
+                    className="d-block w-100"
+                    src="banner2.jpg"
+                    alt="Image Two"
+                  />
+                </Carousel.Item>
+                <Carousel.Item interval={1500}>
+                  <img
+                    className="d-block w-100"
+                    src="banner3.jpg"
+                    alt="Image Three"
+                  />
+                </Carousel.Item>
+              </Carousel>
+            </div>
             <Container fluid="lg">
               <h1 className="my-5">Products List</h1>
 
@@ -152,7 +177,6 @@ export default function HomePage() {
                 mulai dari pakaian pria, pakaian wanita, perhiasan, dan
                 elektronik.
               </h6>
-
               {products.count === 0 ? (
                 <Loader />
               ) : (
