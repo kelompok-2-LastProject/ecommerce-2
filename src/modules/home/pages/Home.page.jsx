@@ -13,6 +13,7 @@ import {
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 import { useSelector, useDispatch } from 'react-redux';
+import Carousel from 'react-bootstrap/Carousel';
 // files
 import MyNavbar from '../../shared/components/MyNavbar';
 import MyFooter from '../../shared/components/MyFooter';
@@ -27,7 +28,7 @@ import {
   productsSelector,
 } from '../../shared/redux/slices/products';
 import useDebounce from '../../shared/hooks/useDebounce';
-import Carousel from 'react-bootstrap/Carousel';
+
 export default function HomePage() {
   /* #region CHECK IF LOGGED IN AS ADMIN */
   const { push } = useRouter();
@@ -143,21 +144,21 @@ export default function HomePage() {
           <main className="pb-5 home-container">
             <div className="mb-5" style={{ width: '100%' }}>
               <Carousel>
-                <Carousel.Item interval={900}>
+                <Carousel.Item interval={1500}>
                   <img
                     className="d-block w-100"
                     src="/banner1.jpg"
                     alt="Image One"
                   />
                 </Carousel.Item>
-                <Carousel.Item interval={900}>
+                <Carousel.Item interval={1500}>
                   <img
                     className="d-block w-100"
                     src="banner2.jpg"
                     alt="Image Two"
                   />
                 </Carousel.Item>
-                <Carousel.Item interval={900}>
+                <Carousel.Item interval={1500}>
                   <img
                     className="d-block w-100"
                     src="banner3.jpg"

@@ -37,14 +37,12 @@ export default function UpdateProductPage() {
 
   /* #region GET PRODUCTS DATA */
   const products = useSelector(productsSelector);
-
   const dispatch = useDispatch();
 
   useEffect(() => {
     (async () => {
       // check if products is already exists
       if (products.count > 0) {
-        //setInputQuantity(products.values);
         return;
       }
 
@@ -59,8 +57,6 @@ export default function UpdateProductPage() {
 
       // add products to redux
       dispatch(addInitialProducts(data));
-
-      //setInputQuantity(products.values);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
