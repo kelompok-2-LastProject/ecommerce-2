@@ -1,6 +1,6 @@
 <a href="https://trishop.vercel.app">
   <p align="center">
-    <img height=100 src="./public/logo-dark.png"/>
+    <img height=100 src="./public/female.png"/>
   </p>
 </a>
 
