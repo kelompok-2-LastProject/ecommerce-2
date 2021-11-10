@@ -27,6 +27,7 @@ import { getProducts } from '../../shared/services/products';
 import {
   addInitialProducts,
   sortProducts,
+  filterProducts,
   productsSelector,
 } from '../../shared/redux/slices/products';
 import useDebounce from '../../shared/hooks/useDebounce';
@@ -124,6 +125,26 @@ export default function HomePage() {
   }, [debouncedSearchTerm]);
   /* #endregion */
 
+  /* #region FILTER CATEGORY*/
+  let categoryDuplicate = products.values.map((product) => product.category);
+  let categoryNonDuplicate = [...new Set(categoryDuplicate)];
+
+  const filterCategory = (category) => {
+    push({
+      pathname: '/',
+      query: { category: category },
+    });
+    setFilteredProducts(
+      products.values.filter((prod) => prod.category === category),
+    );
+  };
+
+  const unFilterCategory = () => {
+    push('/');
+    setFilteredProducts(products.values);
+  };
+  /* #endregion */
+
   /* #region PAGINATION PRODUCTS */
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(8);
@@ -197,6 +218,29 @@ export default function HomePage() {
                         />
                       </InputGroup>
                     </Form>
+
+                    <Dropdown
+                      className="d-flex justify-content-end w-100"
+                      style={{ marginRight: '10px' }}
+                    >
+                      <Dropdown.Toggle id="dropdown-autoclose-true">
+                        Filter Category
+                      </Dropdown.Toggle>
+
+                      <Dropdown.Menu>
+                        {categoryNonDuplicate.map((category, idx) => (
+                          <Dropdown.Item
+                            key={idx}
+                            onClick={() => filterCategory(category)}
+                          >
+                            {category[0].toUpperCase() + category.substr(1)}
+                          </Dropdown.Item>
+                        ))}
+                        <Dropdown.Item onClick={() => unFilterCategory()}>
+                          All Category
+                        </Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown>
 
                     <Dropdown className="d-flex justify-content-end">
                       <Dropdown.Toggle id="dropdown-autoclose-true">

@@ -59,6 +59,7 @@ export const {
   addInitialProducts,
   updateProductsBasedOnCart,
   sortProducts,
+  filterProducts,
   updateProduct,
 } = productsSlice.actions;
 
