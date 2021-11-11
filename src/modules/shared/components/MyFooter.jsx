@@ -34,7 +34,7 @@ const MyFooter = () => {
               <Image
                 className="rounded-circle"
                 alt="logo"
-                src="/logo-dark.png"
+                src="/female.png"
                 width="40"
                 height="40"
               />
