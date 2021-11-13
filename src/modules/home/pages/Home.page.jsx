@@ -1,6 +1,7 @@
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { NextSeo } from 'next-seo';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import {
   Container,
   Row,
@@ -13,7 +14,6 @@ import {
   ListGroupItem,
 } from 'react-bootstrap';
 import { toast } from 'react-toastify';
-import { useRouter } from 'next/router';
 import { useSelector, useDispatch } from 'react-redux';
 import Carousel from 'react-bootstrap/Carousel';
 // files
@@ -21,19 +21,17 @@ import MyNavbar from '../../shared/components/MyNavbar';
 import MyFooter from '../../shared/components/MyFooter';
 import Loader from '../../shared/components/Loader';
 import MyPagination from '../../shared/components/MyPagination';
-import truncateText from '../../shared/utils/truncateText';
 import { ADMIN_TOKEN } from '../../shared/config/constants';
 import { getProducts } from '../../shared/services/products';
 import {
   addInitialProducts,
-  sortProducts,
   productsSelector,
 } from '../../shared/redux/slices/products';
 import useDebounce from '../../shared/hooks/useDebounce';
 
 export default function HomePage() {
   /* #region CHECK IF LOGGED IN AS ADMIN */
-  const { push } = useRouter();
+  const { query, push } = useRouter();
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
@@ -77,14 +75,6 @@ export default function HomePage() {
   }, []);
   /* #endregion */
 
-  /* #region SORT PRODUCTS */
-  const [selectedSortOption, setSelectedSortOption] = useState('default');
-  const onClickSort = (selectedOption) => {
-    dispatch(sortProducts(selectedOption));
-    setSelectedSortOption(selectedOption);
-  };
-  /* #endregion */
-
   /* #region SEARCH PRODUCTS */
   const [searchTerm, setSearchTerm] = useState('');
   const [isSearching, setIsSearching] = useState(false);
@@ -102,26 +92,76 @@ export default function HomePage() {
       setIsSearching(true);
 
       // filter products based on searchTerm
-      setFilteredProducts(
-        products.values.filter(
-          (prod) =>
-            prod.title
-              .toLowerCase()
-              .indexOf(debouncedSearchTerm.toLowerCase()) > -1 ||
-            prod.description
-              .toLowerCase()
-              .indexOf(debouncedSearchTerm.toLowerCase()) > -1,
-        ),
+      const searchedProducts = products.values.filter(
+        (prod) =>
+          prod.title.toLowerCase().indexOf(debouncedSearchTerm.toLowerCase()) >
+            -1 ||
+          prod.description
+            .toLowerCase()
+            .indexOf(debouncedSearchTerm.toLowerCase()) > -1,
       );
 
-      setSelectedSortOption('default');
+      setFilteredProducts(searchedProducts);
       setIsSearching(false);
+      push('/');
     } else {
       setFilteredProducts(products.values);
       setIsSearching(false);
+      push('/');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearchTerm]);
+  /* #endregion */
+
+  /* #region SORT & FILTER PRODUCTS */
+  const notEmpty = filteredProducts.length > 0;
+  const sortOptions = ['price', 'quantity'];
+  const filterOptions = [
+    'All Category',
+    ...new Set(products.values.map((prod) => prod.category)),
+  ];
+
+  const onClickSort = async (selectedSort) => {
+    await push({
+      query: {
+        category: query.category || '',
+        sort: selectedSort,
+      },
+    });
+  };
+  const onClickFilter = async (selectedFilter) => {
+    await push({
+      query: {
+        category: selectedFilter,
+      },
+    });
+  };
+
+  useEffect(() => {
+    if (query.sort) {
+      const sortedProducts = filteredProducts
+        .slice()
+        .sort((a, b) => a[query.sort] - b[query.sort]);
+
+      setFilteredProducts(sortedProducts);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query.sort, notEmpty]);
+
+  useEffect(() => {
+    if (query.category) {
+      if (query.category === 'All Category') {
+        setFilteredProducts(products.values);
+      } else {
+        const categorizedProducts = products.values.filter(
+          (prod) => prod.category === query.category,
+        );
+
+        setFilteredProducts(categorizedProducts);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query.category, notEmpty]);
   /* #endregion */
 
   /* #region PAGINATION PRODUCTS */
@@ -198,26 +238,47 @@ export default function HomePage() {
                       </InputGroup>
                     </Form>
 
-                    <Dropdown className="d-flex justify-content-end">
-                      <Dropdown.Toggle id="dropdown-autoclose-true">
-                        Sort by
-                      </Dropdown.Toggle>
+                    {/* filter category */}
+                    <div className="d-flex gap-5">
+                      <Dropdown className="d-flex justify-content-end">
+                        <Dropdown.Toggle id="dropdown-autoclose-true">
+                          Filter By
+                        </Dropdown.Toggle>
 
-                      <Dropdown.Menu>
-                        <Dropdown.Item
-                          active={selectedSortOption === 'quantity'}
-                          onClick={() => onClickSort('quantity')}
-                        >
-                          Quantity
-                        </Dropdown.Item>
-                        <Dropdown.Item
-                          active={selectedSortOption === 'price'}
-                          onClick={() => onClickSort('price')}
-                        >
-                          Price
-                        </Dropdown.Item>
-                      </Dropdown.Menu>
-                    </Dropdown>
+                        <Dropdown.Menu>
+                          {filterOptions.map((filterOption) => (
+                            <Dropdown.Item
+                              key={filterOption}
+                              active={query.category === filterOption}
+                              onClick={() => onClickFilter(filterOption)}
+                            >
+                              {filterOption.charAt(0).toUpperCase() +
+                                filterOption.slice(1)}
+                            </Dropdown.Item>
+                          ))}
+                        </Dropdown.Menu>
+                      </Dropdown>
+
+                      {/* sort */}
+                      <Dropdown className="d-flex justify-content-end">
+                        <Dropdown.Toggle id="dropdown-autoclose-true">
+                          Sort By
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu>
+                          {sortOptions.map((sortOption) => (
+                            <Dropdown.Item
+                              key={sortOption}
+                              active={query.sort === sortOption}
+                              onClick={() => onClickSort(sortOption)}
+                            >
+                              {sortOption.charAt(0).toUpperCase() +
+                                sortOption.slice(1)}
+                            </Dropdown.Item>
+                          ))}
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    </div>
                   </div>
 
                   <Row xs={1} sm={2} lg={3} xxl={4} className="my-5 g-4">
