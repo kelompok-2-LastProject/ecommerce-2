@@ -1,2 +1,10 @@
-import SalesRecapPage from '../../../modules/admin/products/pages/SalesRecap.page';
-export default SalesRecapPage;
+import dynamic from 'next/dynamic';
+
+const DynamicComponentWithNoSSR = dynamic(
+  () => import('../../../modules/admin/products/pages/SalesRecap.page'),
+  {
+    ssr: false,
+  },
+);
+
+export default DynamicComponentWithNoSSR;
