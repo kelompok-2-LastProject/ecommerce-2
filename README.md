@@ -31,7 +31,17 @@ fe:male adalah final project dari Team 2 yang beranggotakan Tri Rizeki Rifandani
 3. External API call ke [FakeStoreAPI](www.fakestoreapi.com) dengan `axios`
 4. UI Library menggunakan `react-bootstrap`
 5. State management menggunakan `@reduxjs/toolkit`
-6. Peyimpanan data ke Local Storage
+6. Penyimpanan user data ke Local Storage
+7. Export data menggunakan `html2pdf` dan `xlsx`
+
+## Features 💱
+
+1. Autentikasi login 🔑
+2. Search, sort, dan filter products 🔎
+3. Menambahkan products ke Cart 🛒
+4. Update products quantity di page admin 🥂
+5. Melihat Sales Recap hasil checkout di page admin 📃
+6. Export Sales Recap ke Excel dan PDF 📂
 
 ## Design 📝
 
