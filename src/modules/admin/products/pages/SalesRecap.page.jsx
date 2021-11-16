@@ -65,7 +65,7 @@ export default function SalesRecapPage() {
   /* #region EXPORT PDF */
   const exportFileName = `Sales Recap, ${new Date().toLocaleString()}`;
   const exportPdfOpt = {
-    margin: 1,
+    margin: 0.5,
     filename: exportFileName,
     image: { type: 'jpeg', quality: 0.98 },
     html2canvas: { scale: 2, useCORS: true },
@@ -74,8 +74,9 @@ export default function SalesRecapPage() {
 
   const onClickDownloadPDF = async () => {
     const tableElem = document.getElementById('sales-recap-table');
+    const instance = html2pdf();
 
-    await html2pdf().set(exportPdfOpt).from(tableElem).save();
+    await instance.set(exportPdfOpt).from(tableElem).save();
   };
   /* #endregion */
 
