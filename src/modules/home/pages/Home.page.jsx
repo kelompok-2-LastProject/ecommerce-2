@@ -210,7 +210,9 @@ export default function HomePage() {
               </Carousel>
             </div>
             <Container fluid="lg">
-              <h1 className="my-5">Products List</h1>
+              <h1 className="my-5" data-testid="home-heading">
+                Products List
+              </h1>
 
               <h6 className="">
                 fe:male memiliki banyak pilihan produk dari banyak kategori,
@@ -241,7 +243,10 @@ export default function HomePage() {
                     {/* filter category */}
                     <div className="d-flex gap-5">
                       <Dropdown className="d-flex justify-content-end">
-                        <Dropdown.Toggle id="dropdown-autoclose-true">
+                        <Dropdown.Toggle
+                          id="dropdown-autoclose-true"
+                          data-testid="dropdown-filter-by"
+                        >
                           Filter By
                         </Dropdown.Toggle>
 
@@ -251,6 +256,9 @@ export default function HomePage() {
                               key={filterOption}
                               active={query.category === filterOption}
                               onClick={() => onClickFilter(filterOption)}
+                              data-testid={`dropdown-filter-by-${
+                                sortOption.charAt(0) + sortOption.slice(1)
+                              }`}
                             >
                               {filterOption.charAt(0).toUpperCase() +
                                 filterOption.slice(1)}
@@ -261,7 +269,10 @@ export default function HomePage() {
 
                       {/* sort */}
                       <Dropdown className="d-flex justify-content-end">
-                        <Dropdown.Toggle id="dropdown-autoclose-true">
+                        <Dropdown.Toggle
+                          id="dropdown-autoclose-true"
+                          data-testid="dropdown-sort-by"
+                        >
                           Sort By
                         </Dropdown.Toggle>
 
@@ -271,6 +282,9 @@ export default function HomePage() {
                               key={sortOption}
                               active={query.sort === sortOption}
                               onClick={() => onClickSort(sortOption)}
+                              data-testid={`dropdown-sort-by-${
+                                sortOption.charAt(0) + sortOption.slice(1)
+                              }`}
                             >
                               {sortOption.charAt(0).toUpperCase() +
                                 sortOption.slice(1)}
@@ -287,21 +301,25 @@ export default function HomePage() {
                         <h1>No product found</h1>
                       </Col>
                     ) : (
-                      paginatedProducts?.map((product) => (
+                      paginatedProducts?.map((product, idx) => (
                         <Col key={product.id}>
-                          <Card>
+                          <Card data-testid={`product-card-${idx}`}>
                             <Card.Img
                               className="p-5"
                               variant="top"
                               src={product.image}
                               height="300"
                               width="300"
+                              data-testid={`product-card-img-${idx}`}
                             />
 
                             <Card.Body className="px-5">
                               <Row>
                                 <Link href={`/products/${product.id}`}>
-                                  <a className="fw-bolder text-decoration-none text-truncate">
+                                  <a
+                                    className="fw-bolder text-decoration-none text-truncate"
+                                    data-testid={`product-card-title-${idx}`}
+                                  >
                                     {product.title}
                                   </a>
                                 </Link>
