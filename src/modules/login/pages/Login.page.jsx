@@ -87,7 +87,9 @@ export default function LoginPage() {
 
           <main className="my-5 login-container">
             <Container fluid="lg">
-              <h1 className="my-5">Login to your account</h1>
+              <h1 className="my-5" data-testid="login-title">
+                Login to your account
+              </h1>
 
               <Form className="" onSubmit={handleSubmit}>
                 <Form.Group className="mb-3">
@@ -98,6 +100,7 @@ export default function LoginPage() {
                     style={{ width: '50%' }}
                     value={username}
                     onChange={(e) => setUserName(e.target.value)}
+                    data-testid="login-email"
                   />
                 </Form.Group>
 
@@ -109,10 +112,16 @@ export default function LoginPage() {
                     style={{ width: '50%' }}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    data-testid="login-password"
                   />
                 </Form.Group>
 
-                <Button className="my-5" variant="primary" type="submit">
+                <Button
+                  className="my-5"
+                  variant="primary"
+                  type="submit"
+                  data-testid="login-button"
+                >
                   Submit
                 </Button>
               </Form>
