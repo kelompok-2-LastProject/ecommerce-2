@@ -110,7 +110,9 @@ export default function UpdateProductPage() {
 
           <main className="update-product-container">
             <Container fluid="sm md lg my-5 pb-5">
-              <h1 className="my-5">Update Product</h1>
+              <h1 className="my-5" data-testid="admin-products">
+                Update Product
+              </h1>
               {tempProducts.length < 1 ? (
                 <Loader />
               ) : (
