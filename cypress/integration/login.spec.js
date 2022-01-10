@@ -1,14 +1,13 @@
 /// <reference types="cypress" />
 
 describe('Login Page', () => {
-  // beforeEach(() => {
-  //   cy.clearCookies();
-  //   cy.clearLocalStorage();
-  // });
+  beforeEach(() => {
+    cy.clearCookies();
+    cy.clearLocalStorage();
+  });
 
   const BASE_URL = `http://localhost:3000`;
-  // const ADMIN_TOKEN = '432681789120328';
-  // const USER_TOKEN = 'eyJr389hbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9';
+  const ADMIN_TOKEN = '432681789120328';
 
   /* ---------------------------------- Unauthenticated --------------------------------- */
   context('Unauthenticated', () => {
@@ -71,8 +70,10 @@ describe('Login Page', () => {
       // should be redirected to /admin/products
       cy.url().should('include', '/admin/products');
 
-      // token should be present in local storage
-      // expect(localStorage.getItem('token')).to.eq(ADMIN_TOKEN);
+      // ADMIN token should be present in local storage
+      cy.window().then((win) => {
+        expect(win.localStorage.getItem('token')).to.eq(ADMIN_TOKEN);
+      });
 
       // UI should reflect this admin being logged in
       cy.get('[data-testid="admin-products"]').should(
@@ -90,16 +91,15 @@ describe('Login Page', () => {
       // login as USER
       cy.loginAsUser();
 
-      // token should be present in local storage
-      // expect(localStorage.getItem('token')).to.eq(USER_TOKEN);
+      // USER token should be present in local storage
+      cy.window().then((win) => {
+        expect(win.localStorage.getItem('token')).to.match(
+          /eyJr389hbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9/,
+        );
+      });
 
       // UI should reflect this user being logged in
       cy.get('[data-testid="home-heading"]').should('contain', 'Products List');
-
-      // UI should reflect there is an errors
-      cy.get('.Toastify__toast-body')
-        .should('be.visible')
-        .and('contain', 'You are already logged in as user');
     });
   });
 });
