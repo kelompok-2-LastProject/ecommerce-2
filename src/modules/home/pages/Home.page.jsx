@@ -257,7 +257,7 @@ export default function HomePage() {
                               active={query.category === filterOption}
                               onClick={() => onClickFilter(filterOption)}
                               data-testid={`dropdown-filter-by-${
-                                sortOption.charAt(0) + sortOption.slice(1)
+                                filterOption.charAt(0) + filterOption.slice(1)
                               }`}
                             >
                               {filterOption.charAt(0).toUpperCase() +

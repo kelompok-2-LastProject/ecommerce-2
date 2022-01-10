@@ -33,6 +33,8 @@ fe:male adalah final project dari Team 2 yang beranggotakan Tri Rizeki Rifandani
 5. State management menggunakan `@reduxjs/toolkit`
 6. Penyimpanan user data ke Local Storage
 7. Export data menggunakan `html2pdf` dan `xlsx`
+8. E2E Testing menggunakan `cypress`
+9. Unit Testing menggunakan `jest` dan `RTL`
 
 ## Features 💱
 

@@ -1,6 +1,8 @@
 /// <reference types="cypress" />
 
 const BASE_URL = `http://localhost:3000`;
+const ADMIN_TOKEN = '432681789120328';
+// const USER_TOKEN = 'eyJr389hbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9';
 
 const admin = {
   email: 'admin@bukapedia.com',
@@ -22,6 +24,12 @@ Cypress.Commands.add('loginAsAdmin', () => {
 
   // click login button
   cy.get('[data-testid="login-button"]').click();
+
+  // set token manually
+  cy.window().then((win) => {
+    cy.log('set admin token to localStorage', ADMIN_TOKEN);
+    win.localStorage.setItem('token', ADMIN_TOKEN);
+  });
 });
 
 Cypress.Commands.add('loginAsUser', () => {
@@ -39,5 +47,14 @@ Cypress.Commands.add('loginAsUser', () => {
   cy.get('[data-testid="login-button"]').click();
 
   // wait on POST /login call
-  cy.wait('@loginAsUser');
+  cy.wait('@loginAsUser').then((interception) => {
+    // set token manually
+    cy.window().then((win) => {
+      cy.log(
+        'set user token to localStorage',
+        interception.response.body.token,
+      );
+      win.localStorage.setItem('token', interception.response.body.token);
+    });
+  });
 });
